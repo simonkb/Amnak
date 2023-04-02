@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,13 +10,37 @@ import {
 import ChatAssistant from "./chatAssistant";
 import { signOut } from "firebase/auth";
 import { db, auth } from "../config/firebaseConfig";
+import { onSnapshot, doc } from "firebase/firestore";
 
 const Profile = ({ navigation }) => {
-  const [userName, setUserName] = useState("John Doe");
-  const [userEmail, setUserEmail] = useState("johndoe@gmail.com");
-  const [userLevel, setUserLevel] = useState("Beginner");
-  const [userPoints, setUserPoints] = useState(1000);
-  const [userRank, setUserRank] = useState(1);
+  const [userRank, setUserRank] = useState("-");
+  const [userData, setUserData] = useState({
+    username: "",
+    email_address: "",
+    birthDate: 0,
+    points: 0,
+    level: "",
+    ageGroup: "",
+  });
+  const fetchUserData = async () => {
+    if (auth.currentUser) {
+      const user = auth.currentUser;
+      if (user !== null && user.emailVerified) {
+        const uid = user.uid;
+        try {
+          onSnapshot(doc(db, "Users", uid), (doc) => {
+            setUserData(doc.data());
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   return (
     <ImageBackground
@@ -34,21 +58,25 @@ const Profile = ({ navigation }) => {
           <View style={styles.infoContainer}>
             <View style={styles.infoRow}>
               <Text style={styles.label}>Name:</Text>
-              <Text style={styles.text}>{userName}</Text>
+              <Text style={styles.text}>{userData.username}</Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.label}>Email:</Text>
-              <Text style={styles.text}>{userEmail}</Text>
+              <Text style={styles.text}>{userData.email_address}</Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.label}>Level:</Text>
-              <Text style={styles.text}>{userLevel}</Text>
+              <Text style={styles.text}>{userData.level}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.label}>Age group:</Text>
+              <Text style={styles.text}>{userData.ageGroup}</Text>
             </View>
           </View>
           <View style={styles.pointsContainer}>
             <View style={styles.pointsRow}>
               <Text style={styles.pointsLabel}>Points:</Text>
-              <Text style={styles.pointsText}>{userPoints}</Text>
+              <Text style={styles.pointsText}>{userData.points}</Text>
             </View>
             <View style={styles.pointsRow}>
               <Text style={styles.pointsLabel}>Rank:</Text>

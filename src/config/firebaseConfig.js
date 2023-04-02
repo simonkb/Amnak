@@ -1,14 +1,10 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-//import { getAnalytics } from "firebase/analytics";
-// import { initializeFirestore, CACHE_SIZE_UNLIMITED } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import {
-  initializeAuth,
-  getReactNativePersistence,
-} from "firebase/auth/react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import firebase from "firebase/app";
+import "firebase/storage";
+import { getStorage } from "firebase/storage";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -24,26 +20,10 @@ const firebaseConfig = {
   appId: "1:1035111097096:web:daf92e064d9af09b3482bd",
   measurementId: "G-40DXYNHRKE",
 };
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 //const analytics = getAnalytics(app);
-// const firestoreSettings = {
-//   cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED, // or any other size in bytes
-// };
-
-// const firestore = firebase.firestore(app);
-// firestore.settings(firestoreSettings);
 const db = getFirestore(app);
 const auth = getAuth(app);
-//const auth = initializeAuth(app);
-
-// const auth = initializeAuth(app, {
-//   persistence: getReactNativePersistence(AsyncStorage),
-// });
-
-// const firestoreDb = initializeFirestore(app, {
-//   cacheSizeBytes: CACHE_SIZE_UNLIMITED,
-// });
-
-export { auth, db };
+const storage = getStorage(app);
+export { auth, db, storage };

@@ -68,12 +68,21 @@ const Signup = ({ navigation }) => {
       alert("Please enter a valid date of birth.");
       return;
     }
+    let ageGroup;
+
+    if (age < 14) {
+      ageGroup = "Under 14";
+    } else if (age >= 15 && age <= 18) {
+      ageGroup = "15-18";
+    } else if (age >= 19) {
+      ageGroup = "19 and above";
+    } else {
+      ageGroup = "employee";
+    }
 
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         setUser(userCredential.user);
-
-        // if (user) {
         sendEmailVerification(userCredential.user)
           .then(() => {
             setLoading(true);
@@ -83,14 +92,16 @@ const Signup = ({ navigation }) => {
             Alert.alert("Error", error.message);
           });
         const usersRef = collection(db, "Users");
-        setDoc(doc(usersRef, user.uid), {
+        setDoc(doc(usersRef, userCredential.user.uid), {
           username: username,
           email_address: email,
           birthDate: date.getTime(),
+          level: "Beginner",
+          points: 0,
+          ageGroup: ageGroup,
         }).catch((error) => {
           Alert.alert(error.errorCode, error.message);
         });
-        // }
       })
       .catch((error) => {
         setLoading(false);
