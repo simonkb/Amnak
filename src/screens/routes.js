@@ -15,6 +15,7 @@ import LessonScreen from "./lesson";
 import Quiz from "./BeginnerQuiz";
 import QuizPage from "./quiz";
 import Games from "./games";
+import ResultsPage from "./Results";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -44,6 +45,11 @@ const LessonStack = () => {
         name="Quiz"
         component={QuizPage}
         options={{ headerShown: true, headerLeft: null }}
+      />
+      <Stack.Screen
+        name="Results"
+        component={ResultsPage}
+        options={{ headerShown: true }}
       />
     </Stack.Navigator>
   );

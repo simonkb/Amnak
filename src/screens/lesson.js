@@ -7,100 +7,156 @@ import {
   Button,
   ScrollView,
 } from "react-native";
-import { Video } from "expo-av";
+import { db, storage } from "../config/firebaseConfig";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { collection, doc, setDoc, getDocs } from "firebase/firestore";
+import LessonPage from "./lessonsBb";
 
 const LessonScreen = ({ navigation, route }) => {
-  const { topic } = route.params;
+  const { lesson } = route.params;
   const [expanded, setExpanded] = useState(null);
-  const lessons = [
-    {
-      title: "Lesson 1",
-      content: {
-        topic: "Topic 1",
-        body: [
-          "This is the first paragraph\n\n",
-          "This is the second paragraph",
-        ],
-        video:
-          "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+  // const [lessons, setLessons] = useState([]);
+  // [
+  //   {
+  //     title: "Lesson 1",
+  //     content: {
+  //       topic: "Topic 1",
+  //       body: [
+  //         "This is the first paragraph\n\n",
+  //         "This is the second paragraph",
+  //       ],
+  //       //video:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+  //       video:
+  //         "https://firebasestorage.googleapis.com/v0/b/amnak-uae.appspot.com/o/Videos%2Fcia.mp4?alt=media&token=96e6c10b-cc2a-4234-9833-b6efdafbb497",
+  //       image:
+  //         "https://www.researchgate.net/publication/346192126/figure/fig1/AS:961506053197825@1606252315731/The-Confidentiality-Integrity-Availability-CIA-triad_Q640.jpg",
+  //     },
+  //     id: 1,
+  //   },
+  //   {
+  //     title: "Lesson 2",
+  //     content: {
+  //       topic: "Topic 2",
+  //       body: [
+  //         "This is the first paragraph\n\n",
+  //         "This is the second paragraph",
+  //       ],
+  //       video:
+  //         "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
 
-        image: "",
-      },
-      id: 1,
-    },
-    {
-      title: "Lesson 2",
-      content: {
-        topic: "Topic 2",
-        body: [
-          "This is the first paragraph\n\n",
-          "This is the second paragraph",
-        ],
-        video:
-          "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-        image:
-          "https://www.researchgate.net/publication/346192126/figure/fig1/AS:961506053197825@1606252315731/The-Confidentiality-Integrity-Availability-CIA-triad_Q640.jpg",
-      },
-      id: 2,
-    },
-    {
-      title: "Lesson 3",
-      content: {
-        topic: "Topic 3",
-        body: [
-          "This is the first paragraph \n",
-          "This is the second paragraph",
-        ],
-        video:
-          "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-        image:
-          "https://www.researchgate.net/publication/346192126/figure/fig1/AS:961506053197825@1606252315731/The-Confidentiality-Integrity-Availability-CIA-triad_Q640.jpg",
-      },
-      id: 3,
-    },
-  ];
-  const toggleExpanded = (index) => {
-    setExpanded(expanded === index ? null : index);
-  };
-  const handleQuizPressed = (title) => {
-    navigation.navigate("Quiz", { quizTitle: title });
-  };
-  const [playing, setPlaying] = useState(false);
+  //       image:
+  //         "https://www.researchgate.net/publication/346192126/figure/fig1/AS:961506053197825@1606252315731/The-Confidentiality-Integrity-Availability-CIA-triad_Q640.jpg",
+  //     },
+  //     id: 2,
+  //   },
+  //   {
+  //     title: "Lesson 3",
+  //     content: {
+  //       topic: "Topic 3",
+  //       body: [
+  //         "This is the first paragraph\n\n",
+  //         "This is the second paragraph",
+  //       ],
+  //       video:
+  //         "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
 
-  // const handlePlayPause = () => {
-  //   setPlaying(!playing);
+  //       image:
+  //         "https://www.researchgate.net/publication/346192126/figure/fig1/AS:961506053197825@1606252315731/The-Confidentiality-Integrity-Availability-CIA-triad_Q640.jpg",
+  //     },
+  //     id: 3,
+  //   },
+  // ];
+
+  // const submit = () => {
+  //   const file = "../../assets/cia.mp4";
+  //   const storageRef = ref(storage, "Videos/" + "cia.mp4");
+  //   const uploadTask = uploadBytesResumable(storageRef, file);
+
+  //   uploadTask.on(
+  //     "state_changed",
+  //     (snapshot) => {
+  //       // Here you can monitor the progress of the upload
+  //       const progress =
+  //         (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+  //       console.log("Upload is " + progress + "% done");
+  //     },
+  //     (error) => {
+  //       // Handle any errors that occur during the upload
+  //       console.log(error);
+  //     },
+  //     () => {
+  //       // The upload is complete, so you can get the download URL
+  //       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+  //         // Save the download URL to Firestore
+  //         let obj = {
+  //           title: "Lesson 1",
+  //           content: {
+  //             topic: "Topic 1",
+  //             body: [
+  //               "This is the first paragraph\n\n",
+  //               "This is the second paragraph",
+  //             ],
+  //             video: downloadURL,
+  //             image:
+  //               "https://www.researchgate.net/publication/346192126/figure/fig1/AS:961506053197825@1606252315731/The-Confidentiality-Integrity-Availability-CIA-triad_Q640.jpg",
+  //           },
+  //           quiz: [
+  //             {
+  //               question: "What is the capital of France?",
+  //               options: ["Paris", "Rome", "London", "Madrid"],
+  //               answer: "Paris",
+  //               hint: "This is the hint for question 1",
+  //               point: 10,
+  //             },
+  //             {
+  //               question: "What is the tallest mammal?",
+  //               options: ["Elephant", "Giraffe", "Kangaroo", "Gorilla"],
+  //               answer: "Giraffe",
+  //               hint: "This is the hint for question 2",
+  //               point: 10,
+  //             },
+  //             {
+  //               question: "What is the largest planet in our Solar System?",
+  //               options: ["Jupiter", "Saturn", "Uranus", "Neptune"],
+  //               answer: "Jupiter",
+  //               hint: "This is the hint for question 3",
+  //               point: 10,
+  //             },
+  //           ],
+  //         };
+
+  //         const collectionRef = collection(
+  //           db,
+  //           "/Lessons/Under_14/Levels/Beginner/lessons"
+  //         );
+
+  //         setDoc(doc(collectionRef, obj.title), {
+  //           obj,
+  //         }).catch((error) => {
+  //           Alert.alert(error.errorCode, error.message);
+  //         });
+  //       });
+  //     }
+  //   );
   // };
-  const [isFullScreen, setIsFullScreen] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const videoRef = useRef(null);
 
-  const toggleFullScreen = () => {
-    setIsFullScreen(!isFullScreen);
-  };
-
-  const togglePlayPause = () => {
-    setIsPlaying(!isPlaying);
-  };
-
-  // const handlePlayPause = async () => {
-  //   if (isPlaying) {
-  //     await videoRef.current.pauseAsync();
-  //   } else {
-  //     await videoRef.current.playAsync();
-  //   }
+  // const toggleExpanded = (index) => {
+  //   setExpanded(expanded === index ? null : index);
   // };
-
+  const handleQuizPressed = (title, data) => {
+    navigation.navigate("Quiz", { quizTitle: title, quiz: data });
+  };
   return (
     <View style={styles.container}>
       <Image
         source={require("../../assets/bg.jpeg")}
         style={styles.backgroundImage}
       />
-      <ScrollView>
-        <Text style={styles.topic}>{topic}</Text>
-        {lessons.map((lesson, index) => (
-          <View key={lesson.id}>
-            <TouchableOpacity
+      <ScrollView style={styles.lessonContentContainer}>
+        <Text style={styles.topic}>{lesson.id}</Text>
+        {/* {lessons.map((lesson, index) => (
+          <View key={lesson.id}> */}
+        {/* <TouchableOpacity
               style={{
                 width: "96%",
                 backgroundColor: "blue",
@@ -111,83 +167,22 @@ const LessonScreen = ({ navigation, route }) => {
               onPress={() => toggleExpanded(index)}
             >
               <Text style={styles.lessonTitle}>{lesson.title}</Text>
-            </TouchableOpacity>
-            {expanded === index && (
-              <ScrollView style={styles.lessonContentContainer}>
-                <Text style={styles.lessonContent}>{lesson.content.topic}</Text>
-                <Text style={styles.lessonContent}>{lesson.content.body}</Text>
-                {/* <TouchableOpacity
-                  onPress={toggleFullScreen}
-                  style={styles.fullScreenButton}
-                >
-                  <Text style={styles.buttonText}>
-                    {isFullScreen ? "Exit Full Screen" : "Full Screen"}
-                  </Text>
-                </TouchableOpacity> */}
+            </TouchableOpacity> */}
+        {/* {expanded === index && ( */}
+        {/* <ScrollView style={styles.lessonContentContainer}>
+         */}
+        <LessonPage contents={lesson.contents}></LessonPage>
+        <Button
+          title={lesson.id + " Quiz"}
+          onPress={() => {
+            handleQuizPressed(lesson.id, lesson.quiz);
+          }}
+        ></Button>
 
-                <View style={styles.videoContainer}>
-                  <Video
-                    ref={videoRef}
-                    source={{ uri: lesson.content.video }}
-                    rate={1.0}
-                    volume={1.0}
-                    isMuted={false}
-                    resizeMode={isFullScreen ? "contain" : "cover"}
-                    shouldPlay={isPlaying}
-                    style={[
-                      styles.video,
-                      isFullScreen && styles.fullScreenVideo,
-                    ]}
-                  />
-                  <TouchableOpacity
-                    onPress={togglePlayPause}
-                    style={styles.playPauseButton}
-                  >
-                    <Text style={styles.buttonText}>
-                      {isPlaying ? "Pause" : "Play"}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                {/* <TouchableOpacity
-                  onPress={handlePlayPause}
-                  style={{
-                    width: "96%",
-                    left: "2%",
-                    height: "100%",
-                  }}
-                > */}
-                {/* <Video
-                  source={{
-                    uri: lesson.content.video,
-                  }}
-                  rate={1.0}
-                  volume={1.0}
-                  isMuted={false}
-                  resizeMode="cover"
-                  shouldPlay={playing}
-                  style={styles.video}
-                /> */}
-                {/* </TouchableOpacity> */}
-                {/* <View
-                  style={{
-                    padding: 20,
-                  }}
-                >
-                  <Image
-                    source={{ uri: lesson.content.image }}
-                    style={{ width: "96%", left: "2%", height: 200 }}
-                  />
-                </View> */}
-                <Button
-                  title={lesson.title + " Quiz"}
-                  onPress={() => {
-                    handleQuizPressed(topic + "\n" + lesson.title + " Quiz");
-                  }}
-                ></Button>
-              </ScrollView>
-            )}
-          </View>
-        ))}
+        {/* </ScrollView>
+            )} */}
+        {/* </View>
+        ))} */}
       </ScrollView>
     </View>
   );
@@ -206,7 +201,7 @@ const styles = {
     fontSize: 24,
     fontWeight: "bold",
     margin: 16,
-    color: "white",
+    color: "black",
     backgroundColor: "transparent",
   },
   lessonTitle: {
@@ -225,47 +220,10 @@ const styles = {
     flex: 1,
     backgroundColor: "white",
     padding: 8,
-    //width: "96%",
-    //left: "2%",
 
     borderRadius: 15,
   },
-  videoContainer: {
-    flex: 1,
-    alignSelf: "stretch",
-    backgroundColor: "#000",
-  },
-  video: {
-    flex: 1,
-    with: "100%",
-    height: 500,
-  },
-  fullScreenVideo: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    flex: 1,
-    with: "100%",
-    height: "100%",
-  },
-  fullScreenButton: {
-    position: "absolute",
-    top: 20,
-    right: 20,
-    padding: 10,
-    backgroundColor: "#000",
-    borderRadius: 5,
-  },
-  playPauseButton: {
-    position: "absolute",
-    bottom: 20,
-    left: 20,
-    padding: 10,
-    backgroundColor: "#000",
-    borderRadius: 5,
-  },
+
   buttonText: {
     color: "#fff",
   },

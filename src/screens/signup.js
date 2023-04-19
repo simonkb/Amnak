@@ -71,13 +71,13 @@ const Signup = ({ navigation }) => {
     let ageGroup;
 
     if (age < 14) {
-      ageGroup = "Under 14";
+      ageGroup = "Under_14";
     } else if (age >= 15 && age <= 18) {
-      ageGroup = "15-18";
+      ageGroup = "15_18";
     } else if (age >= 19) {
-      ageGroup = "19 and above";
+      ageGroup = "19_and_above";
     } else {
-      ageGroup = "employee";
+      ageGroup = "Employee";
     }
 
     createUserWithEmailAndPassword(auth, email, password)
@@ -99,6 +99,7 @@ const Signup = ({ navigation }) => {
           level: "Beginner",
           points: 0,
           ageGroup: ageGroup,
+          isFirstTime: false,
         }).catch((error) => {
           Alert.alert(error.errorCode, error.message);
         });

@@ -1,5 +1,6 @@
 import { View, Text, Image, TouchableOpacity, Button } from "react-native";
 import React, { useState } from "react";
+import VideoPlayer from "./VideoPlayer";
 const Games = ({ navigation }) => {
   const letters = [
     ["A", "B", "C", "D", "E"],

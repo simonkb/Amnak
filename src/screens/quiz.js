@@ -1,4 +1,178 @@
-import React, { useState } from "react";
+// import React, { useState, useEffect } from "react";
+// import {
+//   View,
+//   Text,
+//   Button,
+//   TouchableOpacity,
+//   Image,
+//   ScrollView,
+// } from "react-native";
+
+// function QuizPage({ navigation, route }) {
+//   const { quizTitle, quiz } = route.params;
+
+//   const [currentQuestion, setCurrentQuestion] = useState(0);
+//   const [selectedAnswer, setSelectedAnswer] = useState(null);
+//   const [results, setResults] = useState(new Array(quiz.length).fill(null));
+//   const [hintsViewed, setHintsViewed] = useState(
+//     new Array(quiz.length).fill(false)
+//   );
+//   const [selectedAnswers, setSelectedAnswers] = useState(
+//     new Array(quiz.length).fill(null)
+//   );
+
+//   const handleOptionPress = (option) => {
+//     setSelectedAnswer(option);
+//     setSelectedAnswers((prevSelectedAnswers) => {
+//       const newSelectedAnswers = [...prevSelectedAnswers];
+//       newSelectedAnswers[currentQuestion] = option;
+//       return newSelectedAnswers;
+//     });
+//   };
+
+//   const handleSubmit = () => {
+//     const newResults = [...results];
+//     newResults[currentQuestion] =
+//       selectedAnswer === quiz[currentQuestion].answer ? 1 : 0;
+//     setResults(newResults);
+//     setSelectedAnswer(null);
+//   };
+
+//   const handlePrev = () => {
+//     setHintsViewed((prevHintsViewed) => {
+//       const newHintsViewed = [...prevHintsViewed];
+//       newHintsViewed[currentQuestion] = false;
+//       return newHintsViewed;
+//     });
+
+//     if (currentQuestion > 0) {
+//       setCurrentQuestion(currentQuestion - 1);
+//     }
+//   };
+
+//   const handleNext = () => {
+//     setHintsViewed((prevHintsViewed) => {
+//       const newHintsViewed = [...prevHintsViewed];
+//       newHintsViewed[currentQuestion] = false;
+//       return newHintsViewed;
+//     });
+
+//     if (currentQuestion < quiz.length - 1) {
+//       setCurrentQuestion(currentQuestion + 1);
+//     }
+//   };
+//   const handleDone = () => {
+//     if (selectedAnswers.includes(null)) {
+//       alert("Please answer all questions before submitting");
+//     } else {
+//       navigation.navigate("Results", {
+//         quizTitle,
+//         quiz,
+//         results,
+//         selectedAnswers,
+//         hintsViewed,
+//       });
+//     }
+//   };
+
+//   return (
+//     <View style={styles.container}>
+//       <Image
+//         source={require("../../assets/bg.jpeg")}
+//         style={styles.backgroundImage}
+//       />
+//       <Text style={styles.topic}>{quizTitle}</Text>
+//       <ScrollView
+//         style={{
+//           backgroundColor: "white",
+//           width: "90%",
+//           borderRadius: 5,
+//           padding: 20,
+//           opacity: 0.95,
+//           height: "40%",
+//           bottom: 15,
+//         }}
+//       >
+//         <Text>Question {currentQuestion + 1}</Text>
+//         <Text>{quiz[currentQuestion].question}</Text>
+//         {quiz[currentQuestion].options.map((option, index) => (
+//           <TouchableOpacity
+//             key={index}
+//             onPress={() => handleOptionPress(option)}
+//             disabled={results[currentQuestion] !== null}
+//           >
+//             <Text style={selectedAnswer === option ? { color: "green" } : null}>
+//               {option}
+//             </Text>
+//           </TouchableOpacity>
+//         ))}
+//         {results[currentQuestion] !== null && (
+//           <Text style={{ color: "green" }}>✓ Submitted</Text>
+//         )}
+//         <Button
+//           title="Submit"
+//           onPress={handleSubmit}
+//           disabled={
+//             selectedAnswer === null || results[currentQuestion] !== null
+//           }
+//         />
+//         <Button
+//           title="Previous"
+//           onPress={handlePrev}
+//           disabled={currentQuestion === 0}
+//         />
+//         <Button
+//           title="Next"
+//           onPress={handleNext}
+//           disabled={currentQuestion === quiz.length - 1}
+//         />
+//         <Button
+//           title="Done"
+//           onPress={() => handleDone()}
+//           disabled={currentQuestion !== quiz.length - 1}
+//         />
+//         {!hintsViewed[currentQuestion] && (
+//           <Button
+//             title="Show Hint"
+//             onPress={() => {
+//               setHintsViewed((prevState) => {
+//                 const newHintsViewed = [...prevState];
+//                 newHintsViewed[currentQuestion] = true;
+//                 return newHintsViewed;
+//               });
+//             }}
+//           />
+//         )}
+//         {hintsViewed[currentQuestion] && (
+//           <Text>{quiz[currentQuestion].hint}</Text>
+//         )}
+//       </ScrollView>
+//     </View>
+//   );
+// }
+
+// const styles = {
+//   container: {
+//     flex: 1,
+//     alignItems: "center",
+//     justifyContent: "center",
+//   },
+//   backgroundImage: {
+//     position: "absolute",
+//     width: "100%",
+//     height: "100%",
+//   },
+//   topic: {
+//     fontSize: 24,
+//     fontWeight: "bold",
+//     margin: 16,
+//     color: "white",
+//     backgroundColor: "transparent",
+//   },
+// };
+
+// export default QuizPage;
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,64 +183,81 @@ import {
 } from "react-native";
 
 function QuizPage({ navigation, route }) {
-  const { quizTitle } = route.params;
-  const questions = [
-    {
-      question: "What is the capital of France?",
-      options: ["Paris", "Rome", "London", "Madrid"],
-      answer: "Paris",
-      hint: "This is the hint for question 1",
-    },
-    {
-      question: "What is the tallest mammal?",
-      options: ["Elephant", "Giraffe", "Kangaroo", "Gorilla"],
-      answer: "Giraffe",
-      hint: "This is the hint for question 2",
-    },
-    {
-      question: "What is the largest planet in our Solar System?",
-      options: ["Jupiter", "Saturn", "Uranus", "Neptune"],
-      answer: "Jupiter",
-      hint: "This is the hint for question 3",
-    },
-  ];
+  const { quizTitle, quiz } = route.params;
+
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [results, setResults] = useState(new Array(quiz.length).fill(null));
+  const [hintsViewed, setHintsViewed] = useState(
+    new Array(quiz.length).fill(false)
+  );
+  const [selectedAnswers, setSelectedAnswers] = useState(
+    new Array(quiz.length).fill(null)
+  );
 
   const handleOptionPress = (option) => {
     setSelectedAnswer(option);
+    setSelectedAnswers((prevSelectedAnswers) => {
+      const newSelectedAnswers = [...prevSelectedAnswers];
+      newSelectedAnswers[currentQuestion] = option;
+      return newSelectedAnswers;
+    });
   };
 
   const handleSubmit = () => {
-    if (selectedAnswer === questions[currentQuestion].answer) {
-      console.log("Correct!");
-    } else {
-      console.log(
-        "Incorrect, the correct answer is: " + questions[currentQuestion].answer
-      );
-    }
+    const newResults = [...results];
+    newResults[currentQuestion] =
+      selectedAnswer === quiz[currentQuestion].answer ? 1 : 0;
+    setResults(newResults);
     setSelectedAnswer(null);
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    }
   };
 
   const handlePrev = () => {
-    setShowHint(false);
-
     if (currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1);
     }
   };
 
   const handleNext = () => {
-    setShowHint(false);
-
-    if (currentQuestion < questions.length - 1) {
+    if (currentQuestion < quiz.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     }
   };
-  const [showHint, setShowHint] = useState(false);
+
+  const handleDone = () => {
+    if (selectedAnswers.includes(null)) {
+      alert("Please answer all questions before submitting");
+    } else {
+      navigation.navigate("Results", {
+        quizTitle,
+        quiz,
+        results,
+        selectedAnswers,
+        hintsViewed,
+      });
+    }
+  };
+
+  const handleHintView = () => {
+    if (
+      !hintsViewed[currentQuestion] &&
+      selectedAnswers[currentQuestion] === null
+    ) {
+      setHintsViewed((prevState) => {
+        const newHintsViewed = [...prevState];
+        newHintsViewed[currentQuestion] = true;
+        return newHintsViewed;
+      });
+    }
+  };
+
+  useEffect(() => {
+    setHintsViewed((prevHintsViewed) => {
+      const newHintsViewed = [...prevHintsViewed];
+      newHintsViewed[currentQuestion] = false;
+      return newHintsViewed;
+    });
+  }, [currentQuestion]);
 
   return (
     <View style={styles.container}>
@@ -74,7 +265,7 @@ function QuizPage({ navigation, route }) {
         source={require("../../assets/bg.jpeg")}
         style={styles.backgroundImage}
       />
-      <Text style={styles.topic}>{quizTitle}</Text>
+      <Text style={styles.topic}>{quizTitle} Quiz</Text>
       <ScrollView
         style={{
           backgroundColor: "white",
@@ -87,21 +278,27 @@ function QuizPage({ navigation, route }) {
         }}
       >
         <Text>Question {currentQuestion + 1}</Text>
-        <Text>{questions[currentQuestion].question}</Text>
-        {questions[currentQuestion].options.map((option, index) => (
+        <Text>{quiz[currentQuestion].question}</Text>
+        {quiz[currentQuestion].options.map((option, index) => (
           <TouchableOpacity
             key={index}
             onPress={() => handleOptionPress(option)}
+            disabled={results[currentQuestion] !== null}
           >
             <Text style={selectedAnswer === option ? { color: "green" } : null}>
               {option}
             </Text>
           </TouchableOpacity>
         ))}
+        {results[currentQuestion] !== null && (
+          <Text style={{ color: "green" }}>✓ Submitted</Text>
+        )}
         <Button
           title="Submit"
           onPress={handleSubmit}
-          disabled={selectedAnswer === null}
+          disabled={
+            selectedAnswer === null || results[currentQuestion] !== null
+          }
         />
         <Button
           title="Previous"
@@ -111,19 +308,35 @@ function QuizPage({ navigation, route }) {
         <Button
           title="Next"
           onPress={handleNext}
-          disabled={currentQuestion === questions.length - 1}
+          disabled={currentQuestion === quiz.length - 1}
         />
         <Button
-          title="hint"
-          onPress={() => {
-            setShowHint(true);
-          }}
+          title="Done"
+          onPress={() => handleDone()}
+          disabled={currentQuestion !== quiz.length - 1}
         />
-        {showHint && <Text>{questions[currentQuestion].hint}</Text>}
+        {!hintsViewed[currentQuestion] && results[currentQuestion] === null && (
+          <Button
+            title="Show Hint"
+            onPress={() => {
+              setHintsViewed((prevState) => {
+                const newHintsViewed = [...prevState];
+                if (!results[currentQuestion]) {
+                  newHintsViewed[currentQuestion] = true;
+                }
+                return newHintsViewed;
+              });
+            }}
+          />
+        )}
+        {hintsViewed[currentQuestion] && (
+          <Text>{quiz[currentQuestion].hint}</Text>
+        )}
       </ScrollView>
     </View>
   );
 }
+
 const styles = {
   container: {
     flex: 1,
@@ -143,4 +356,5 @@ const styles = {
     backgroundColor: "transparent",
   },
 };
+
 export default QuizPage;

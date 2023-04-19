@@ -1,4 +1,5 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,45 +8,88 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Alert,
 } from "react-native";
+import {
+  collection,
+  doc,
+  setDoc,
+  onSnapshot,
+  updateDoc,
+} from "firebase/firestore";
 import ChatAssistant from "./chatAssistant";
-const data = [
-  {
-    id: 1,
-    title: "Educative stories",
-  },
-  {
-    id: 2,
-    title: "Basics of CIA",
-  },
-  {
-    id: 3,
-    title: "Path Ways to IS",
-  },
-  {
-    id: 4,
-    title: "Passwords",
-  },
-  {
-    id: 5,
-    title: "Best Practices",
-  },
-];
+import { db, auth } from "../config/firebaseConfig";
+import { async } from "@firebase/util";
 
 const Lessons = ({ navigation }) => {
-  const handlePress = (title) => {
-    navigation.navigate("Lesson", { topic: title });
+  const handlePress = (data) => {
+    if (userData.isFirstTime) {
+      Alert.alert("Error", "lease complete the beginners quiz first");
+      navigation.navigate("Home");
+    } else {
+      navigation.navigate("Lesson", { lesson: data });
+    }
   };
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
         style={styles.lessonButton}
-        onPress={() => handlePress(item.title)}
+        onPress={() => handlePress(item)}
       >
-        <Text style={styles.lessonButtonText}>{item.title}</Text>
+        <Text style={styles.lessonButtonText}>{item.id}</Text>
       </TouchableOpacity>
     );
   };
+
+  const [userData, setUserData] = useState(null);
+  const [lessons, setLessons] = useState([]);
+
+  const fetchUserData = async () => {
+    if (auth.currentUser) {
+      const user = auth.currentUser;
+      if (user !== null && user.emailVerified) {
+        const uid = user.uid;
+        try {
+          onSnapshot(doc(db, "Users", uid), (doc) => {
+            setUserData(doc.data());
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const readLessons = () => {
+    if (userData) {
+      try {
+        const lessonsRef = collection(
+          db,
+          "/Lessons/" +
+            userData.ageGroup +
+            "/Levels/" +
+            userData.level +
+            "/lessons"
+        );
+
+        onSnapshot(lessonsRef, (querySnapshot) => {
+          const allLessons = [];
+          querySnapshot.forEach((doc) => {
+            allLessons.push({ id: doc.id, ...doc.data() });
+          });
+          setLessons(allLessons);
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+  if (lessons.length === 0) readLessons();
+
   return (
     <ImageBackground
       source={require("../../assets/bg.jpeg")}
@@ -57,14 +101,16 @@ const Lessons = ({ navigation }) => {
             source={require("../../assets/icon.png")}
             style={styles.appIcon}
           />
-          <Text style={styles.headingText}>Beginner Lessons</Text>
+          <Text style={styles.headingText}>{userData?.level} Lessons</Text>
         </View>
+
         <FlatList
-          data={data}
+          data={lessons}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.lessonsContainer}
         />
+
         <View
           style={{ bottom: 20, left: 0, position: "absolute", width: "100%" }}
         >
@@ -86,7 +132,6 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     height: "100%",
-    // alignItems: "center",
     justifyContent: "center",
     paddingTop: 80,
   },
