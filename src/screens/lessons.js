@@ -19,7 +19,6 @@ import {
 } from "firebase/firestore";
 import ChatAssistant from "./chatAssistant";
 import { db, auth } from "../config/firebaseConfig";
-import { async } from "@firebase/util";
 
 const Lessons = ({ navigation }) => {
   const handlePress = (data) => {
@@ -70,18 +69,23 @@ const Lessons = ({ navigation }) => {
         const lessonsRef = collection(
           db,
           "/Lessons/" +
-            userData.ageGroup +
+            userData?.ageGroup +
             "/Levels/" +
-            userData.level +
+            userData?.level +
             "/lessons"
         );
-
         onSnapshot(lessonsRef, (querySnapshot) => {
           const allLessons = [];
           querySnapshot.forEach((doc) => {
             allLessons.push({ id: doc.id, ...doc.data() });
           });
           setLessons(allLessons);
+          if (allLessons.length === 0) {
+            Alert.alert(
+              "Message",
+              "We are sorry to let you know that we don't have any lesson for this level yet. We will add it asap."
+            );
+          }
         });
       } catch (error) {
         console.log(error);

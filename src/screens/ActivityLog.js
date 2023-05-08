@@ -3,18 +3,44 @@ import { View, Text, FlatList, StyleSheet } from "react-native";
 
 const ActivityLogItem = ({ log }) => {
   const getStatusColor = () => {
-    switch (log.pointsEarned) {
-      case 30:
-        return "green";
-      case 10:
-        return "red";
-      default:
-        return "black";
+    // const totalPoints = log.selectedAnswers.length * 10;
+    // let percent = (log.pointsEarned / totalPoints) * 100;
+    // if (percent >= 90) {
+    //   return "green";
+    // } else if (percent < 60) {
+    //   return "red";
+    // } else {
+    //   const yellowValue = ((percent - 60) / 30) * 255;
+    //   const redValue = (1 - (percent - 60) / 30) * 255;
+    //   const greenValue = ((90 - percent) / 30) * 255;
+    //   return `rgb(${redValue}, ${yellowValue}, ${greenValue})`;
+    // }
+    const totalPoints = log.selectedAnswers.length * 10;
+    let percent = (log.pointEarned / totalPoints) * 100;
+    percent = 16;
+    if (percent >= 80) {
+      const redValue = 255;
+      const greenValue = 0;
+      const blueValue = 0;
+      //return `rgb(${redValue}, ${greenValue}, ${blueValue})`;
+      return "green";
+    } else if (percent < 60) {
+      const redValue = 255;
+      const greenValue = 255;
+      const blueValue = 0;
+      // return `rgb(${redValue}, ${greenValue}, ${blueValue})`;
+      return "red";
+    } else {
+      const redValue = ((percent - 60) / 30) * 255;
+      const greenValue = ((90 - percent) / 30) * 255;
+      const blueValue = 0;
+      //return `rgb(${redValue}, ${greenValue}, ${blueValue})`;
+      return "yellow";
     }
   };
 
   return (
-    <View style={styles.logItemContainer}>
+    <View style={[styles.logItemContainer, { backgroundColor: "white" }]}>
       <View
         style={[styles.logItemStatus, { backgroundColor: getStatusColor() }]}
       />
@@ -23,7 +49,9 @@ const ActivityLogItem = ({ log }) => {
         <Text style={styles.logItemDate}>
           {new Date(log.dateCompleted).toLocaleDateString()}
         </Text>
-        <Text style={styles.logItemPoints}>{log.pointsEarned} Points</Text>
+        <Text style={styles.logItemPoints}>
+          {log.pointsEarned} out of {log.selectedAnswers.length * 10} Points
+        </Text>
       </View>
     </View>
   );
@@ -59,7 +87,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
-    backgroundColor: "white",
+
     padding: 5,
     borderRadius: 5,
   },

@@ -23,7 +23,6 @@ import {
   query,
 } from "firebase/firestore";
 import ActivityLog from "./ActivityLog";
-import { setLogLevel } from "firebase/app";
 
 const Home = ({ navigation }) => {
   const [showBeginnersQuiz, setShowBeginnersQuiz] = useState(false);
@@ -109,6 +108,7 @@ const Home = ({ navigation }) => {
       }
     }
   };
+
   const onSubmit = () => {
     const collectionRef = collection(db, "/Lessons/Under_14/Levels");
 

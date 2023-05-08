@@ -1,11 +1,17 @@
-import { async } from "@firebase/util";
-import { collection, doc, onSnapshot, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+  increment,
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, Button, ImageBackground } from "react-native";
 import { db, auth } from "../config/firebaseConfig";
 
-function ResultsPage({ route }) {
-  const { quizTitle, quiz, results, selectedAnswers, hintsViewed } =
+function ResultsPage({ navigation, route }) {
+  const { quizTitle, quiz, selectedAnswers, hintsViewed, isSaved } =
     route.params;
   const [userData, setUserData] = useState(null);
 
@@ -28,7 +34,9 @@ function ResultsPage({ route }) {
   const renderItem = ({ item, index }) => {
     const points = calculatePointsEarned(index);
     return (
-      <View style={{ marginVertical: 10 }}>
+      <View
+        style={{ marginVertical: 10, backgroundColor: "white", padding: 10 }}
+      >
         <Text style={{ fontWeight: "bold" }}>{`Question ${index + 1}: ${
           item.question
         }`}</Text>
@@ -49,16 +57,29 @@ function ResultsPage({ route }) {
           onSnapshot(doc(db, "Users", uid), (doc) => {
             setUserData(doc.data());
           });
-          setDoc(doc(db, `Users/${uid}/TasksCompleted`, quizTitle), {
-            taskName: `Completed ${quizTitle} and its quiz.`,
-            dateCompleted: new Date().getTime(),
-            selectedAnswers: selectedAnswers,
-            pointsEarned: totalPointsEarned,
-            docReference: doc(
-              db,
-              `/Lessons/${userData?.ageGroup}/Levels/${userData?.level}/lessons/${quizTitle}`
-            ),
-          });
+          if (!isSaved) {
+            setDoc(doc(db, `Users/${uid}/TasksCompleted`, quizTitle), {
+              taskName: `Completed ${quizTitle} and its quiz.`,
+              dateCompleted: new Date().getTime(),
+              selectedAnswers: selectedAnswers,
+              hintsViewed: hintsViewed,
+              pointsEarned: totalPointsEarned,
+              docReference: doc(
+                db,
+                `/Lessons/${userData?.ageGroup}/Levels/${userData?.level}/lessons/${quizTitle}`
+              ),
+            });
+            const userDocRef = doc(db, "Users", uid);
+            updateDoc(userDocRef, {
+              points: increment(totalPointsEarned),
+            })
+              .then(() => {
+                console.log("Points updated successfully");
+              })
+              .catch((error) => {
+                console.error("Error updating points: ", error);
+              });
+          }
         } catch (error) {
           console.log(error);
         }
@@ -76,22 +97,47 @@ function ResultsPage({ route }) {
   }, 0);
 
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text style={{ fontSize: 24, fontWeight: "bold", margin: 16 }}>
-        {quizTitle} Quiz Results
-      </Text>
-      <FlatList
-        data={quiz}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderItem}
-      />
-      <Text
-        style={{ fontSize: 18, fontWeight: "bold", marginTop: 0, bottom: 40 }}
+    <ImageBackground
+      source={require("../../assets/bg.jpeg")}
+      style={{
+        flex: 1,
+        width: "100%",
+        height: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "white",
+          opacity: 0.9,
+          padding: 10,
+        }}
       >
-        Total points earned: {totalPointsEarned}
-      </Text>
-    </View>
+        <Text style={{ fontSize: 24, fontWeight: "bold", margin: 16 }}>
+          {quizTitle} Quiz Results
+        </Text>
+        <FlatList
+          data={quiz}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={renderItem}
+        />
+        <Text
+          style={{ fontSize: 18, fontWeight: "bold", marginTop: 0, bottom: 40 }}
+        >
+          Total points earned: {totalPointsEarned}
+        </Text>
+        <Button
+          title="Back to lessons"
+          onPress={() => {
+            navigation.navigate("All Lessons");
+          }}
+        ></Button>
+      </View>
+    </ImageBackground>
   );
 }
-
 export default ResultsPage;

@@ -49,7 +49,7 @@ const LessonStack = () => {
       <Stack.Screen
         name="Results"
         component={ResultsPage}
-        options={{ headerShown: true }}
+        options={{ headerShown: true, headerLeft: null }}
       />
     </Stack.Navigator>
   );
@@ -72,6 +72,7 @@ const QuizStack = () => {
     </Stack.Navigator>
   );
 };
+
 const AuthStack = () => {
   return (
     <Stack.Navigator>
@@ -134,7 +135,7 @@ const Navigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {user ? (
+        {user?.emailVerified ? (
           <Stack.Screen
             name="Main"
             component={MainStack}

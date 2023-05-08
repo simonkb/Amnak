@@ -41,6 +41,7 @@ const Signup = ({ navigation }) => {
 
   //   return unsubscribe; // unsubscribe listener on unmount
   // }, []);
+
   const [user, setUser] = useState(null);
   const handleSignup = () => {
     // Validate form fields
@@ -85,6 +86,10 @@ const Signup = ({ navigation }) => {
         setUser(userCredential.user);
         sendEmailVerification(userCredential.user)
           .then(() => {
+            Alert.alert(
+              "Verify email",
+              "We have sent you a link to verify your email."
+            );
             setLoading(true);
           })
           .catch((error) => {
@@ -99,7 +104,7 @@ const Signup = ({ navigation }) => {
           level: "Beginner",
           points: 0,
           ageGroup: ageGroup,
-          isFirstTime: false,
+          isFirstTime: true,
         }).catch((error) => {
           Alert.alert(error.errorCode, error.message);
         });
@@ -272,7 +277,7 @@ const Signup = ({ navigation }) => {
           <Text style={styles.loginText}>Already have an account? Login</Text>
         </TouchableOpacity>
 
-        {loading && (
+        {/* {loading && (
           <View style={styles.overlay}>
             <ActivityIndicator size="large" color="blue" />
             <View
@@ -325,7 +330,7 @@ const Signup = ({ navigation }) => {
               )}
             </View>
           </View>
-        )}
+        )} */}
       </View>
     </ImageBackground>
   );

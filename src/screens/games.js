@@ -1,6 +1,14 @@
-import { View, Text, Image, TouchableOpacity, Button } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Button,
+  TextInput,
+} from "react-native";
 import React, { useState } from "react";
 import VideoPlayer from "./VideoPlayer";
+import MyComponent from "./ChatBloom";
 const Games = ({ navigation }) => {
   const letters = [
     ["A", "B", "C", "D", "E"],
@@ -220,6 +228,7 @@ const Games = ({ navigation }) => {
         style={styles.backgroundImage}
       />
       <WordPuzzle />
+      {/* <MyComponent></MyComponent> */}
     </View>
   );
 };
