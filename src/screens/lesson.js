@@ -8,7 +8,6 @@ import {
   ScrollView,
 } from "react-native";
 import { db, storage, auth } from "../config/firebaseConfig";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { collection, doc, setDoc, getDocs, getDoc } from "firebase/firestore";
 import LessonPage from "./lessonsBb";
 
@@ -50,36 +49,15 @@ const LessonScreen = ({ navigation, route }) => {
         style={styles.backgroundImage}
       />
       <ScrollView style={styles.lessonContentContainer}>
-        <Text style={styles.topic}>{lesson.id}</Text>
-        {/* {lessons.map((lesson, index) => (
-          <View key={lesson.id}> */}
-        {/* <TouchableOpacity
-              style={{
-                width: "96%",
-                backgroundColor: "blue",
-                left: "2%",
-                marginTop: 10,
-                borderRadius: 15,
-              }}
-              onPress={() => toggleExpanded(index)}
-            >
-              <Text style={styles.lessonTitle}>{lesson.title}</Text>
-            </TouchableOpacity> */}
-        {/* {expanded === index && ( */}
-        {/* <ScrollView style={styles.lessonContentContainer}>
-         */}
+        <Text style={styles.topic}>{lesson.title}</Text>
+      
         <LessonPage contents={lesson.contents}></LessonPage>
         <Button
-          title={lesson.id + " Quiz"}
+          title={lesson.title + " Quiz"}
           onPress={() => {
-            handleQuizPressed(lesson.id, lesson.quiz);
+            handleQuizPressed(lesson.title, lesson.quiz);
           }}
         ></Button>
-
-        {/* </ScrollView>
-            )} */}
-        {/* </View>
-        ))} */}
       </ScrollView>
     </View>
   );

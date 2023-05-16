@@ -7,54 +7,11 @@ import {
   BackHandler,
 } from "react-native";
 import { Video } from "expo-av";
-import { MaterialIcons } from "@expo/vector-icons";
 
 const VideoPlayer = ({ videoUri }) => {
   const videoRef = useRef(null);
   const [status, setStatus] = useState({});
   const [isFullScreen, setIsFullScreen] = useState(false);
-
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      () => {
-        if (isFullScreen) {
-          setIsFullScreen(false);
-          videoRef.current.dismissFullscreenPlayer();
-          return true;
-        }
-        return false;
-      }
-    );
-
-    return () => backHandler.remove();
-  }, [isFullScreen]);
-
-  const handleBackward = () => {
-    videoRef.current.setPositionAsync(status.positionMillis - 5000);
-  };
-
-  const handleForward = () => {
-    videoRef.current.setPositionAsync(status.positionMillis + 5000);
-  };
-
-  const handlePlayPause = () => {
-    if (status.isPlaying) {
-      videoRef.current.pauseAsync();
-    } else {
-      videoRef.current.playAsync();
-    }
-  };
-
-  const handleFullScreen = () => {
-    setIsFullScreen(!isFullScreen);
-    if (!isFullScreen) {
-      videoRef.current.presentFullscreenPlayer();
-    } else {
-      videoRef.current.dismissFullscreenPlayer();
-    }
-  };
-
   const width = isFullScreen ? Dimensions.get("window").width : "100%";
   const height = isFullScreen ? Dimensions.get("window").height : "60%";
 
@@ -65,33 +22,11 @@ const VideoPlayer = ({ videoUri }) => {
           ref={videoRef}
           style={styles.video}
           source={{ uri: videoUri }}
-          useNativeControls={false}
+          useNativeControls={true}
           resizeMode="contain"
           isLooping
           onPlaybackStatusUpdate={setStatus}
         />
-        <View style={styles.controlsContainer}>
-          <TouchableOpacity onPress={handleBackward}>
-            <MaterialIcons name="replay-10" size={32} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handlePlayPause}>
-            <MaterialIcons
-              name={status.isPlaying ? "pause" : "play-arrow"}
-              size={32}
-              color="#fff"
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleForward}>
-            <MaterialIcons name="forward-10" size={32} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleFullScreen}>
-            <MaterialIcons
-              name={isFullScreen ? "fullscreen-exit" : "fullscreen"}
-              size={32}
-              color="#fff"
-            />
-          </TouchableOpacity>
-        </View>
       </View>
     </View>
   );
@@ -107,7 +42,6 @@ const styles = StyleSheet.create({
     opacity: 0.9,
     borderRadius: 15,
     alignSelf: "stretch",
-    //aspectRatio: 16 / 9,
   },
   video: {
     width: "100%",

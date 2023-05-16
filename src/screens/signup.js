@@ -345,8 +345,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   container: {
-    width: "80%",
-    height: "70%",
+    width: "90%",
+    height: "90%",
     backgroundColor: "white",
     padding: 20,
     borderRadius: 10,

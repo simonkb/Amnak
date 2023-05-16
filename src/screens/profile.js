@@ -10,8 +10,17 @@ import {
 import ChatAssistant from "./chatAssistant";
 import { signOut } from "firebase/auth";
 import { db, auth } from "../config/firebaseConfig";
-import { onSnapshot, doc } from "firebase/firestore";
-
+import {
+  collection,
+  doc,
+  setDoc,
+  onSnapshot,
+  updateDoc,
+  getDocs,
+  orderBy,
+  query,
+} from "firebase/firestore";
+import ActivityLog from "./ActivityLog";
 const Profile = ({ navigation }) => {
   const [userRank, setUserRank] = useState("-");
   const [userData, setUserData] = useState({
@@ -22,6 +31,7 @@ const Profile = ({ navigation }) => {
     level: "",
     ageGroup: "",
   });
+  const [logs, setLogs] = useState(null);
   const fetchUserData = async () => {
     if (auth.currentUser) {
       const user = auth.currentUser;
@@ -34,6 +44,22 @@ const Profile = ({ navigation }) => {
         } catch (error) {
           console.log(error);
         }
+        const tasksCompletedRef = collection(db, `Users/${uid}/TasksCompleted`);
+        const tasksQuery = query(
+          tasksCompletedRef,
+          orderBy("dateCompleted", "desc")
+        );
+        getDocs(tasksQuery)
+          .then((querySnapshot) => {
+            let list = [];
+            querySnapshot.forEach((doc) => {
+              list.push(doc.data());
+            });
+            setLogs(list);
+          })
+          .catch((error) => {
+            console.error("Error getting documents: ", error);
+          });
       }
     }
   };
@@ -51,7 +77,7 @@ const Profile = ({ navigation }) => {
         <View style={styles.container}>
           <View style={styles.topContainer}>
             <Image
-              source={require("../../assets/profile.webp")}
+              source={require("../../assets/icon.png")}
               style={styles.profilePic}
             />
           </View>
@@ -83,13 +109,17 @@ const Profile = ({ navigation }) => {
               <Text style={styles.pointsText}>{userRank}</Text>
             </View>
           </View>
+          <View style={styles.containerLog}>
+            <Text style={styles.headingLog}>Your Activities</Text>
+            <ActivityLog logs={logs} />
+          </View>
           <Button
             title="Logout"
             onPress={() => {
               signOut(auth)
                 .then(() => {
                   // User signed out
-                  navigation.navigate("Login");
+                  navigation.navigate("Index");
                 })
                 .catch((error) => {
                   // Handle errors here
@@ -98,7 +128,7 @@ const Profile = ({ navigation }) => {
           ></Button>
         </View>
         <View
-          style={{ bottom: 20, left: 0, position: "absolute", width: "100%" }}
+          style={{ bottom: 10, left: 0, position: "absolute", width: "100%" }}
         >
           <ChatAssistant />
         </View>
@@ -106,7 +136,6 @@ const Profile = ({ navigation }) => {
     </ImageBackground>
   );
 };
-
 const styles = StyleSheet.create({
   background: {
     flex: 1,
@@ -122,30 +151,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     opacity: 0.9,
+    flex: 1,
   },
   container: {
-    width: "90%",
-    height: "80%",
+    width: "100%",
+    height: "100%",
     backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
     alignItems: "center",
-    opacity: 0.8,
+    opacity: 0.9,
+    padding: 10,
+    flex: 1,
   },
   topContainer: {
-    width: "100%",
-    height: "30%",
     alignItems: "center",
     justifyContent: "center",
   },
   profilePic: {
-    width: 100,
-    height: 100,
+    top: 25,
+    width: 150,
+    height: 80,
     borderRadius: 100,
   },
   infoContainer: {
-    width: "100%",
-    height: "25%",
+    width: "95%",
     padding: 10,
     alignItems: "center",
     justifyContent: "center",
@@ -168,7 +196,7 @@ const styles = StyleSheet.create({
   },
   pointsContainer: {
     width: "100%",
-    height: "25%",
+    // height: "25%",
     padding: 10,
     alignItems: "center",
     justifyContent: "center",
@@ -178,16 +206,31 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginVertical: 5,
   },
   pointsLabel: {
-    fontSize: 40,
+    fontSize: 20,
     color: "black",
     fontWeight: "bold",
   },
   pointsText: {
-    fontSize: 40,
+    fontSize: 20,
     color: "green",
+  },
+
+  containerLog: {
+    flex: 1,
+    backgroundColor: "#F0F0F0",
+    paddingTop: 20,
+    paddingHorizontal: 20,
+    //margin: 10,
+    borderRadius: 10,
+    width: "100%",
+  },
+  headingLog: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "black",
   },
 });
 

@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { auth } from "../config/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
+
 import Login from "./login";
 import Signup from "./signup";
 import ForgotPassword from "./forgetPassword";
@@ -16,9 +17,62 @@ import Quiz from "./BeginnerQuiz";
 import QuizPage from "./quiz";
 import Games from "./games";
 import ResultsPage from "./Results";
-
+import HackerDefense from "./HackerDefense";
+import {
+  PasswordQuest,
+  PhishingScam,
+  FirewallDefense,
+  MalwareHunt,
+  SafeSurfing,
+} from "./allGames";
+import LandingPage from "./index";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+const GameStack = () => {
+  return (
+    <Stack.Navigator initialRouteName="All Lessons">
+      <Stack.Screen
+        name="All Games"
+        component={Games}
+        options={{
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="Password Quest"
+        component={PasswordQuest}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="Hacker Defense"
+        component={HackerDefense}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="Phishing Scam"
+        component={PhishingScam}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="Firewall Defense"
+        component={FirewallDefense}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="Malware Hunt"
+        component={MalwareHunt}
+        options={{ headerShown: true }}
+      />
+
+      <Stack.Screen
+        name="Safe Surfing"
+        component={SafeSurfing}
+        options={{ headerShown: true }}
+      />
+    </Stack.Navigator>
+  );
+};
+
 const LessonStack = () => {
   return (
     <Stack.Navigator initialRouteName="All Lessons">
@@ -77,14 +131,19 @@ const AuthStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
+        name="Index"
+        component={LandingPage}
+        options={{ headerShown: false, gestureEnabled: true }}
+      />
+      <Stack.Screen
         name="Login"
         component={Login}
-        options={{ headerShown: false }}
+        options={{ headerShown: true, gestureEnabled: true }}
       />
       <Stack.Screen
         name="Signup"
         component={Signup}
-        options={{ headerShown: false }}
+        options={{ headerShown: true }}
       />
       <Stack.Screen
         name="Forgot Password"
@@ -113,11 +172,11 @@ const MainStack = () => {
         component={QuizStack}
         options={{ headerShown: false }}
       /> */}
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Games"
-        component={Games}
+        component={GameStack}
         options={{ headerShown: false }}
-      />
+      /> */}
       <Tab.Screen
         name="Profile"
         component={Profile}

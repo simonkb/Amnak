@@ -7,7 +7,7 @@ import {
   increment,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, Button, ImageBackground } from "react-native";
+import { View, Text, FlatList, Button, Image } from "react-native";
 import { db, auth } from "../config/firebaseConfig";
 
 function ResultsPage({ navigation, route }) {
@@ -97,24 +97,29 @@ function ResultsPage({ navigation, route }) {
   }, 0);
 
   return (
-    <ImageBackground
-      source={require("../../assets/bg.jpeg")}
+    <View
       style={{
         flex: 1,
-        width: "100%",
-        height: "100%",
-        justifyContent: "center",
-        alignItems: "center",
       }}
     >
+      <Image
+        source={require("../../assets/bg.jpeg")}
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+        }}
+      />
       <View
         style={{
           flex: 1,
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "white",
-          opacity: 0.9,
+          opacity: 0.8,
           padding: 10,
+          margin: 10,
+          borderRadius:15
         }}
       >
         <Text style={{ fontSize: 24, fontWeight: "bold", margin: 16 }}>
@@ -137,7 +142,7 @@ function ResultsPage({ navigation, route }) {
           }}
         ></Button>
       </View>
-    </ImageBackground>
+    </View>
   );
 }
 export default ResultsPage;

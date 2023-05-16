@@ -23,6 +23,7 @@ import {
   query,
 } from "firebase/firestore";
 import ActivityLog from "./ActivityLog";
+import ReadDailyNews from "./ReadDailyNews";
 
 const Home = ({ navigation }) => {
   const [showBeginnersQuiz, setShowBeginnersQuiz] = useState(false);
@@ -40,6 +41,7 @@ const Home = ({ navigation }) => {
             setIsFirstTime(doc.data().isFirstTime);
             setUserData(doc.data());
           });
+
           const tasksCompletedRef = collection(
             db,
             `Users/${uid}/TasksCompleted`
@@ -156,7 +158,6 @@ const Home = ({ navigation }) => {
             source={require("../../assets/icon.png")}
             style={styles.appIcon}
           />
-          <Text style={styles.welcomeText}>Welcome to my App</Text>
         </View>
 
         {isFirstTime ? (
@@ -167,12 +168,22 @@ const Home = ({ navigation }) => {
             <Text style={styles.quizButtonText}> Beginners Quiz</Text>
           </TouchableOpacity>
         ) : (
-          <View style={styles.containerLog}>
-            <Text style={styles.headingLog}>Your Activities</Text>
-            <ActivityLog logs={logs} />
+          <View>
+            <View
+              style={{
+                backgroundColor: "white",
+                width: "90%",
+                margin: 5,
+                alignSelf: "center",
+                padding: 10,
+                borderRadius: 15,
+              }}
+            >
+              <Text style={styles.headingLog}>Cyber security news</Text>
+            </View>
+            <ReadDailyNews></ReadDailyNews>
           </View>
         )}
-        {/* <Button title="Submit" onPress={onSubmit()}></Button> */}
         {showBeginnersQuiz && (
           <View style={styles.quizContainer}>
             <>
@@ -212,16 +223,17 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   appIcon: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 120,
+    height: 120,
+    borderRadius: 100,
     top: 0,
   },
   welcomeText: {
-    fontSize: 36,
+    fontSize: 30,
     fontWeight: "bold",
-    color: "black",
-    marginTop: 50,
+    marginTop: 30,
+    color: "white",
+    padding: 10,
   },
   quizContainer: {
     //  alignItems: "center",
@@ -259,6 +271,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
+    width: "80%",
+    alignSelf: "center",
   },
 });
 

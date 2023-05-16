@@ -13,9 +13,7 @@ import {
 import {
   collection,
   doc,
-  setDoc,
   onSnapshot,
-  updateDoc,
 } from "firebase/firestore";
 import ChatAssistant from "./chatAssistant";
 import { db, auth } from "../config/firebaseConfig";
@@ -144,9 +142,10 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   appIcon: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 100,
+    height: 100,
+    borderRadius: 100,
+    top: 0,
   },
   headingText: {
     fontSize: 24,
