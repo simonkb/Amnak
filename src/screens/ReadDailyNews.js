@@ -21,7 +21,6 @@ import {
 } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
 const ReadDailyNews = () => {
-
   const [news, setNews] = useState([]);
 
   const colRef = collection(db, "DailyNews");
@@ -40,14 +39,13 @@ const ReadDailyNews = () => {
   }, []);
 
   const renderNewsItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.newsItemContainer}
-      onPress={() => handleNewsItemPress(item.url)}
-    >
+    <View style={styles.newsItemContainer}>
       <Text style={styles.newsItemTitle}>{item.title}</Text>
       <Text style={styles.newsItemDescription}>{item.description}</Text>
-      <Text style={styles.newsItemReadMore}>Read More</Text>
-    </TouchableOpacity>
+      <TouchableOpacity onPress={() => handleNewsItemPress(item.url)}>
+        <Text style={styles.newsItemReadMore}>Read More</Text>
+      </TouchableOpacity>
+    </View>
   );
 
   const handleNewsItemPress = (url) => {
@@ -73,7 +71,7 @@ const ReadDailyNews = () => {
 const styles = StyleSheet.create({
   newsFeedContainer: {
     flexGrow: 1,
-    paddingBottom: 20,
+    paddingBottom: 300,
   },
   newsItemContainer: {
     backgroundColor: "white",

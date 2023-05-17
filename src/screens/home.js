@@ -168,7 +168,16 @@ const Home = ({ navigation }) => {
             <Text style={styles.quizButtonText}> Beginners Quiz</Text>
           </TouchableOpacity>
         ) : (
-          <View>
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+            //  backgroundColor: "rgba(0, 0, 0, 0.5)",
+              
+             // opacity: 0.85,
+             // flex: 1,
+            }}
+          >
             <View
               style={{
                 backgroundColor: "white",
@@ -181,6 +190,7 @@ const Home = ({ navigation }) => {
             >
               <Text style={styles.headingLog}>Cyber security news</Text>
             </View>
+
             <ReadDailyNews></ReadDailyNews>
           </View>
         )}
