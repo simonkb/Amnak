@@ -18,16 +18,24 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.simonkd2.AmnakUAE"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.simonkd2.AmnakUAE"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "bbceb03c-3ab1-4e19-a45b-79c52cd159eb"
+      }
+    },
+    "owner": "simonkd2"
   }
 }

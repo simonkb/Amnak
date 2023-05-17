@@ -15,63 +15,11 @@ import Profile from "./profile";
 import LessonScreen from "./lesson";
 import Quiz from "./BeginnerQuiz";
 import QuizPage from "./quiz";
-import Games from "./games";
 import ResultsPage from "./Results";
-import HackerDefense from "./HackerDefense";
-import {
-  PasswordQuest,
-  PhishingScam,
-  FirewallDefense,
-  MalwareHunt,
-  SafeSurfing,
-} from "./allGames";
+
 import LandingPage from "./index";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-const GameStack = () => {
-  return (
-    <Stack.Navigator initialRouteName="All Lessons">
-      <Stack.Screen
-        name="All Games"
-        component={Games}
-        options={{
-          headerShown: true,
-        }}
-      />
-      <Stack.Screen
-        name="Password Quest"
-        component={PasswordQuest}
-        options={{ headerShown: true }}
-      />
-      <Stack.Screen
-        name="Hacker Defense"
-        component={HackerDefense}
-        options={{ headerShown: true }}
-      />
-      <Stack.Screen
-        name="Phishing Scam"
-        component={PhishingScam}
-        options={{ headerShown: true }}
-      />
-      <Stack.Screen
-        name="Firewall Defense"
-        component={FirewallDefense}
-        options={{ headerShown: true }}
-      />
-      <Stack.Screen
-        name="Malware Hunt"
-        component={MalwareHunt}
-        options={{ headerShown: true }}
-      />
-
-      <Stack.Screen
-        name="Safe Surfing"
-        component={SafeSurfing}
-        options={{ headerShown: true }}
-      />
-    </Stack.Navigator>
-  );
-};
 
 const LessonStack = () => {
   return (
@@ -88,13 +36,7 @@ const LessonStack = () => {
         component={LessonScreen}
         options={{ headerShown: true }}
       />
-      {/* <Stack.Screen
-        name="All Quizzes"
-        component={Quizzes}
-        options={{
-          headerShown: false,
-        }}
-      /> */}
+
       <Stack.Screen
         name="Quiz"
         component={QuizPage}
@@ -133,12 +75,12 @@ const AuthStack = () => {
       <Stack.Screen
         name="Index"
         component={LandingPage}
-        options={{ headerShown: false, gestureEnabled: true }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Login"
         component={Login}
-        options={{ headerShown: true, gestureEnabled: true }}
+        options={{ headerShown: true }}
       />
       <Stack.Screen
         name="Signup"

@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     backgroundColor: "gray",
   },
   titleContainer: {
-    marginTop: 100,
+    marginTop: 120,
     paddingHorizontal: 20,
     alignItems: "center",
     marginBottom: 10,

@@ -32,7 +32,7 @@ const LessonPage = (props) => {
           ) : content.type === "bulletPoints" ? (
             <View style={{ paddingLeft: 29 }}>
               {content.body.map((point) => (
-                <View style={styles.bulletContainer}>
+                <View style={styles.bulletContainer} key={point}>
                   <FontAwesome name="circle" style={styles.bulletIcon} />
                   <Text style={styles.bulletText}>{point}</Text>
                 </View>

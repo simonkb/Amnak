@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: "white",
     paddingTop: 65,
-    paddingBottom: 10,
+    paddingBottom: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#E5E5E5",
     position: "absolute",
