@@ -172,20 +172,13 @@ const Home = ({ navigation }) => {
             style={{
               width: "100%",
               height: "100%",
-            //  backgroundColor: "rgba(0, 0, 0, 0.5)",
-              
-             // opacity: 0.85,
-             // flex: 1,
             }}
           >
             <View
               style={{
-                backgroundColor: "white",
-                width: "90%",
-                margin: 5,
+                backgroundColor: "#0A4BC9",
+                width: "100%",
                 alignSelf: "center",
-                padding: 10,
-                borderRadius: 15,
               }}
             >
               <Text style={styles.headingLog}>Cyber security news</Text>
@@ -233,8 +226,8 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   appIcon: {
-    width: 120,
-    height: 120,
+    width: 180,
+    height: 180,
     borderRadius: 100,
     top: 0,
   },
@@ -246,7 +239,6 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   quizContainer: {
-    //  alignItems: "center",
     width: "90%",
     backgroundColor: "white",
     padding: "5%",
@@ -278,11 +270,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   headingLog: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 20,
+    //marginBottom: 20,
     width: "80%",
     alignSelf: "center",
+    color:'white'
   },
 });
 

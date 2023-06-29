@@ -18,6 +18,9 @@ import QuizPage from "./quiz";
 import ResultsPage from "./Results";
 
 import LandingPage from "./index";
+import ReadDailyNews from "./ReadDailyNews";
+import CertificationCategoriesPage from "./CertificationCategoriesPage";
+import CertificationDetailsPage from "./CertificationDetailsPage";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -50,6 +53,22 @@ const LessonStack = () => {
     </Stack.Navigator>
   );
 };
+const RoadMapStack = () => {
+  return (
+    <Stack.Navigator initialRouteName="Cyber Security Certifications">
+      <Stack.Screen
+        name="Cyber Security Certifications"
+        component={CertificationCategoriesPage}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="Certification Details"
+        component={CertificationDetailsPage}
+        options={{ headerShown: true }}
+      />
+    </Stack.Navigator>
+  );
+};
 const QuizStack = () => {
   return (
     <Stack.Navigator initialRouteName="All Quizzes">
@@ -73,8 +92,18 @@ const AuthStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Index"
+        name="Back"
         component={LandingPage}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Cyber Security News"
+        component={ReadDailyNews}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="Certifications"
+        component={RoadMapStack}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -109,16 +138,11 @@ const MainStack = () => {
         component={LessonStack}
         options={{ headerShown: false }}
       />
-      {/* <Tab.Screen
-        name="Quizzes"
-        component={QuizStack}
+      <Tab.Screen
+        name="Certifications"
+        component={RoadMapStack}
         options={{ headerShown: false }}
-      /> */}
-      {/* <Tab.Screen
-        name="Games"
-        component={GameStack}
-        options={{ headerShown: false }}
-      /> */}
+      />
       <Tab.Screen
         name="Profile"
         component={Profile}

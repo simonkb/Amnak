@@ -119,7 +119,7 @@ const Profile = ({ navigation }) => {
               signOut(auth)
                 .then(() => {
                   // User signed out
-                  navigation.navigate("Index");
+                  navigation.navigate("Auth");
                 })
                 .catch((error) => {
                   // Handle errors here

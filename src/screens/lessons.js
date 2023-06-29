@@ -10,13 +10,10 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-import {
-  collection,
-  doc,
-  onSnapshot,
-} from "firebase/firestore";
+import { collection, doc, onSnapshot } from "firebase/firestore";
 import ChatAssistant from "./chatAssistant";
 import { db, auth } from "../config/firebaseConfig";
+// import WordToHTMLConverter from "./DisplayLesson";
 
 const Lessons = ({ navigation }) => {
   const handlePress = (data) => {
@@ -112,6 +109,7 @@ const Lessons = ({ navigation }) => {
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.lessonsContainer}
         />
+        {/* <WordToHTMLConverter></WordToHTMLConverter> */}
 
         <View
           style={{ bottom: 20, left: 0, position: "absolute", width: "100%" }}
