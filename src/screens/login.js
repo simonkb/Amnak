@@ -24,8 +24,8 @@ const Login = ({ navigation }) => {
         const user = userCredential.user;
         if (user)
           if (user.emailVerified) {
-            Alert.alert("Success", "Login successful");
             navigation.navigate("Main");
+            Alert.alert("Success", "Login successful");
           } else {
             sendEmailVerification(user)
               .then(() => {
@@ -59,7 +59,6 @@ const Login = ({ navigation }) => {
           onChangeText={(text) => setEmail(text)}
           autoCapitalize="none"
         />
-
         <Text style={styles.label}>Password</Text>
         <TextInput
           style={styles.input}
@@ -67,7 +66,6 @@ const Login = ({ navigation }) => {
           onChangeText={(text) => setPassword(text)}
           secureTextEntry={true}
         />
-
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
@@ -80,7 +78,6 @@ const Login = ({ navigation }) => {
         >
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
-
         <TouchableOpacity
           style={styles.login}
           onPress={() => navigation.navigate("Forgot Password")}

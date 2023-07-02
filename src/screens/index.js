@@ -1,8 +1,15 @@
 import React from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import Slogan from "./slogan";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../config/firebaseConfig";
 
 const LandingPage = ({ navigation }) => {
+  onAuthStateChanged(auth, (user) => {
+    if (user?.emailVerified) {
+      navigation.navigate("Main");
+    }
+  });
   return (
     <View style={styles.container}>
       <Image
@@ -14,7 +21,7 @@ const LandingPage = ({ navigation }) => {
         <View>
           <Image
             source={require("../../assets/icon.png")}
-            style={{ alignSelf: "center", width:300, height:300 }}
+            style={{ alignSelf: "center", width: 300, height: 300 }}
           />
           <Slogan></Slogan>
         </View>
@@ -41,7 +48,9 @@ const LandingPage = ({ navigation }) => {
             navigation.navigate("Certifications");
           }}
         >
-          <Text style={styles.buttonText}>Cyber Security Certifications Roadmap</Text>
+          <Text style={styles.buttonText}>
+            Cyber Security Certifications Roadmap
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

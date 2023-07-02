@@ -91,6 +91,7 @@ const Signup = ({ navigation }) => {
               "We have sent you a link to verify your email."
             );
             setLoading(true);
+            navigation.navigate("Login");
           })
           .catch((error) => {
             setLoading(false);

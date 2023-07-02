@@ -1,10 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import { auth } from "../config/firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
-
 import Login from "./login";
 import Signup from "./signup";
 import ForgotPassword from "./forgetPassword";
@@ -13,10 +10,8 @@ import Lessons from "./lessons";
 import Quizzes from "./quizzes";
 import Profile from "./profile";
 import LessonScreen from "./lesson";
-import Quiz from "./BeginnerQuiz";
 import QuizPage from "./quiz";
 import ResultsPage from "./Results";
-
 import LandingPage from "./index";
 import ReadDailyNews from "./ReadDailyNews";
 import CertificationCategoriesPage from "./CertificationCategoriesPage";
@@ -59,7 +54,7 @@ const RoadMapStack = () => {
       <Stack.Screen
         name="Cyber Security Certifications"
         component={CertificationCategoriesPage}
-        options={{ headerShown: true }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Certification Details"
@@ -104,8 +99,9 @@ const AuthStack = () => {
       <Stack.Screen
         name="Certifications"
         component={RoadMapStack}
-        options={{ headerShown: false }}
+        options={{ headerShown: true }}
       />
+    
       <Stack.Screen
         name="Login"
         component={Login}
@@ -141,7 +137,7 @@ const MainStack = () => {
       <Tab.Screen
         name="Certifications"
         component={RoadMapStack}
-        options={{ headerShown: false }}
+        options={{ headerShown: true }}
       />
       <Tab.Screen
         name="Profile"
@@ -153,26 +149,19 @@ const MainStack = () => {
 };
 
 const Navigation = () => {
-  const [user, setUser] = React.useState(null);
-  onAuthStateChanged(auth, (user) => {
-    setUser(user);
-  });
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {user?.emailVerified ? (
-          <Stack.Screen
-            name="Main"
-            component={MainStack}
-            options={{ headerShown: false }}
-          />
-        ) : (
-          <Stack.Screen
-            name="Auth"
-            component={AuthStack}
-            options={{ headerShown: false }}
-          />
-        )}
+        <Stack.Screen
+          name="Auth"
+          component={AuthStack}
+          options={{ headerShown: false, gestureEnabled:false }}
+        />
+        <Stack.Screen
+          name="Main"
+          component={MainStack}
+          options={{ headerShown: false, gestureEnabled:false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

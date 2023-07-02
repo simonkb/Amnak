@@ -23,9 +23,11 @@ function ResultsPage({ navigation, route }) {
     if (userAnswer === null) {
       return 0;
     } else if (userAnswer === correctAnswer && !hintViewed) {
-      return currentQuiz.point;
+      //return currentQuiz.point;
+      return 10;
     } else if (userAnswer === correctAnswer && hintViewed) {
-      return currentQuiz.point * 0.7;
+      //return currentQuiz.point * 0.7;
+      return 10 * 0.9;
     } else {
       return 0;
     }
@@ -119,7 +121,7 @@ function ResultsPage({ navigation, route }) {
           opacity: 0.8,
           padding: 10,
           margin: 10,
-          borderRadius:15
+          borderRadius: 15,
         }}
       >
         <Text style={{ fontSize: 24, fontWeight: "bold", margin: 16 }}>
@@ -130,17 +132,29 @@ function ResultsPage({ navigation, route }) {
           keyExtractor={(item, index) => index.toString()}
           renderItem={renderItem}
         />
-        <Text
-          style={{ fontSize: 18, fontWeight: "bold", marginTop: 0, bottom: 40 }}
-        >
-          Total points earned: {totalPointsEarned}
-        </Text>
-        <Button
-          title="Back to lessons"
-          onPress={() => {
-            navigation.navigate("All Lessons");
-          }}
-        ></Button>
+        <View style={{
+          backgroundColor:'green',
+          width:'90%',
+          padding:20, 
+          borderRadius:15
+        }}>
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: "bold",
+              marginTop: 0,
+              color:'white'
+            }}
+          >
+            Total points earned: {totalPointsEarned}
+          </Text>
+        </View>
+          <Button
+            title="Back to lessons"
+            onPress={() => {
+              navigation.navigate("All Lessons");
+            }}
+          ></Button>
       </View>
     </View>
   );

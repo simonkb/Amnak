@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  StyleSheet,
 } from "react-native";
 
 function QuizPage({ navigation, route }) {
@@ -93,49 +94,63 @@ function QuizPage({ navigation, route }) {
       />
       <Text style={styles.topic}>{quizTitle} Quiz</Text>
       <ScrollView
-        style={{
-          backgroundColor: "white",
-          width: "90%",
-          borderRadius: 5,
-          padding: 20,
-          opacity: 0.95,
-          height: "40%",
-          bottom: 15,
-        }}
+        style={styles.quizContainer}
+        contentContainerStyle={styles.quizContentContainer}
       >
-        <Text>Question {currentQuestion + 1}</Text>
-        <Text>{quiz[currentQuestion].question}</Text>
+        <Text style={styles.questionNumber}>
+          Question {currentQuestion + 1}
+        </Text>
+        <Text style={styles.questionText}>
+          {quiz[currentQuestion].question}
+        </Text>
         {quiz[currentQuestion].options.map((option, index) => (
           <TouchableOpacity
             key={index}
+            style={[
+              styles.optionButton,
+              selectedAnswer === option ? styles.selectedOptionButton : null,
+            ]}
             onPress={() => handleOptionPress(option)}
             disabled={results[currentQuestion] !== null}
           >
-            <Text style={selectedAnswer === option ? { color: "green" } : null}>
+            <Text
+              style={[
+                styles.optionButtonText,
+                selectedAnswer === option
+                  ? styles.selectedOptionButtonText
+                  : null,
+              ]}
+            >
               {option}
             </Text>
           </TouchableOpacity>
         ))}
         {results[currentQuestion] !== null && (
-          <Text style={{ color: "green" }}>✓ Submitted</Text>
+          <Text style={styles.submittedText}>✓ Submitted</Text>
         )}
-        <Button
-          title="Submit"
-          onPress={handleSubmit}
-          disabled={
-            selectedAnswer === null || results[currentQuestion] !== null
-          }
-        />
-        <Button
-          title="Previous"
-          onPress={handlePrev}
-          disabled={currentQuestion === 0}
-        />
-        <Button
-          title="Next"
-          onPress={handleNext}
-          disabled={currentQuestion === quiz.length - 1}
-        />
+        <View style={{
+          flexDirection:'row',
+          justifyContent:'space-between'
+        }}>
+          <Button
+            title="Previous"
+            onPress={handlePrev}
+            disabled={currentQuestion === 0}
+          />
+          <Button
+            title="Submit"
+            onPress={handleSubmit}
+            disabled={
+              selectedAnswer === null || results[currentQuestion] !== null
+            }
+          />
+          <Button
+            title="Next"
+            onPress={handleNext}
+            disabled={currentQuestion === quiz.length - 1}
+          />
+        </View>
+       
         <Button
           title="Done"
           onPress={() => handleDone()}
@@ -156,14 +171,14 @@ function QuizPage({ navigation, route }) {
           />
         )}
         {hintsViewed[currentQuestion] && (
-          <Text>{quiz[currentQuestion].hint}</Text>
+          <Text style={styles.hintText}>{quiz[currentQuestion].hint}</Text>
         )}
       </ScrollView>
     </View>
   );
 }
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
@@ -177,10 +192,57 @@ const styles = {
   topic: {
     fontSize: 24,
     fontWeight: "bold",
-    margin: 16,
+    margin: 10,
     color: "white",
     backgroundColor: "transparent",
   },
-};
+  quizContainer: {
+    backgroundColor: "white",
+    width: "97%",
+    borderRadius: 5,
+    padding: 20,
+    opacity: 0.95,
+    marginBottom: 5,
+  },
+  quizContentContainer: {
+    paddingBottom: 50,
+  },
+  questionNumber: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "blue",
+    fontStyle: "italic",
+  },
+  questionText: {
+    fontSize: 18,
+    marginBottom: 20,
+    fontWeight: "bold",
+  },
+  optionButton: {
+    backgroundColor: "lightgray",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  selectedOptionButton: {
+    backgroundColor: "green",
+  },
+  optionButtonText: {
+    fontSize: 16,
+    color: "black",
+  },
+  selectedOptionButtonText: {
+    color: "white",
+  },
+  submittedText: {
+    color: "green",
+    marginBottom: 10,
+  },
+  hintText: {
+    marginTop: 10,
+  },
+});
 
 export default QuizPage;
