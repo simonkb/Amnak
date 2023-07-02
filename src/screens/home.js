@@ -90,13 +90,13 @@ const Home = ({ navigation }) => {
       const user = auth.currentUser;
       if (user !== null && user.emailVerified) {
         const uid = user.uid;
-        let level = "Beginner";
+        let level = "Beginners";
         if ((result > 6) & (result <= 9)) {
           level = "Intermediate";
         } else if (result > 9) {
           level = "Advanced";
         } else {
-          level = "Beginner";
+          level = "Beginners";
         }
         try {
           await updateDoc(doc(db, "Users", uid), {
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     maxWidth: "100%",
     minWidth: "100%",
-    paddingHorizontal:10,
+    paddingHorizontal: 10,
     color: "white",
   },
 });

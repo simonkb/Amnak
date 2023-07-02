@@ -102,7 +102,7 @@ const Signup = ({ navigation }) => {
           username: username,
           email_address: email,
           birthDate: date.getTime(),
-          level: "Beginner",
+          level: "Beginners",
           points: 0,
           ageGroup: ageGroup,
           isFirstTime: true,
