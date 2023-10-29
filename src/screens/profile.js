@@ -6,6 +6,8 @@ import {
   ImageBackground,
   StyleSheet,
   Button,
+  Alert,
+  TouchableOpacity,
 } from "react-native";
 import ChatAssistant from "./chatAssistant";
 import { signOut } from "firebase/auth";
@@ -19,10 +21,14 @@ import {
   getDocs,
   orderBy,
   query,
+  where,
 } from "firebase/firestore";
 import ActivityLog from "./ActivityLog";
+import { sendEmailVerification } from "firebase/auth";
+
 const Profile = ({ navigation }) => {
   const [userRank, setUserRank] = useState("-");
+
   const [userData, setUserData] = useState({
     username: "",
     email_address: "",
@@ -31,24 +37,61 @@ const Profile = ({ navigation }) => {
     level: "",
     ageGroup: "",
   });
+
   const [logs, setLogs] = useState(null);
+  const [isEmailVerified, setIsEmailVerified] = useState(false); // New state for email verification
   const fetchUserData = async () => {
     if (auth.currentUser) {
       const user = auth.currentUser;
-      if (user !== null && user.emailVerified) {
+      if (user) {
+        setIsEmailVerified(user.emailVerified);
         const uid = user.uid;
+
         try {
+          // Fetch data using onSnapshot
           onSnapshot(doc(db, "Users", uid), (doc) => {
             setUserData(doc.data());
+
+            // Now that you have the userData, fetch additional data using getDocs
+            const ageGroup = doc.data().ageGroup;
+            const usersInAgeGroupRef = collection(db, "Users");
+            const q = query(
+              usersInAgeGroupRef,
+              where("ageGroup", "==", ageGroup),
+              orderBy("points", "desc")
+            );
+
+            getDocs(q)
+              .then((querySnapshot) => {
+                let userIndex = -1;
+                querySnapshot.docs.forEach((doc, index) => {
+                  if (doc.id === uid) {
+                    userIndex = index;
+                  }
+                });
+                if (userIndex !== -1) {
+                  setUserRank(userIndex + 1);
+                  // console.log(
+                  //   `User ${uid} is ranked at index ${userIndex + 1}`
+                  // );
+                } else {
+                  console.log(`User ${uid} not found in this age group`);
+                }
+              })
+              .catch((error) => {
+                console.error("Error getting documents: ", error);
+              });
           });
         } catch (error) {
           console.log(error);
         }
+
         const tasksCompletedRef = collection(db, `Users/${uid}/TasksCompleted`);
         const tasksQuery = query(
           tasksCompletedRef,
           orderBy("dateCompleted", "desc")
         );
+
         getDocs(tasksQuery)
           .then((querySnapshot) => {
             let list = [];
@@ -68,6 +111,39 @@ const Profile = ({ navigation }) => {
     fetchUserData();
   }, []);
 
+  const sendVerificationEmail = () => {
+    const user = auth.currentUser;
+    sendEmailVerification(user)
+      .then(() => {
+        Alert.alert(
+          "Email Verification",
+          "A verification link has been sent to your email address. Please check your inbox.",
+          [{ text: "OK" }]
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleVerifyEmail = () => {
+    sendVerificationEmail();
+  };
+  const getRankStyle = (rank) => {
+    if (rank === 1) {
+      return styles.goldRank;
+    } else if (rank === 2) {
+      return styles.silverRank;
+    } else if (rank === 3) {
+      return styles.bronzeRank;
+    } else {
+      return styles.normalRank;
+    }
+  };
+
+  const formatRank = (rank) => {
+    return rank <= 3 ? rank.toString() : `#${rank}`;
+  };
   return (
     <ImageBackground
       source={require("../../assets/bg.jpeg")}
@@ -86,10 +162,20 @@ const Profile = ({ navigation }) => {
               <Text style={styles.label}>Name:</Text>
               <Text style={styles.text}>{userData.username}</Text>
             </View>
+
             <View style={styles.infoRow}>
               <Text style={styles.label}>Email:</Text>
               <Text style={styles.text}>{userData.email_address}</Text>
             </View>
+            {!isEmailVerified && ( // Display the button if email is not verified
+              <TouchableOpacity
+                style={styles.verifyButton}
+                onPress={handleVerifyEmail}
+              >
+                <Text style={styles.verifyButtonText}>Verify Email</Text>
+              </TouchableOpacity>
+            )}
+
             <View style={styles.infoRow}>
               <Text style={styles.label}>Level:</Text>
               <Text style={styles.text}>{userData.level}</Text>
@@ -105,30 +191,35 @@ const Profile = ({ navigation }) => {
               <Text style={styles.pointsText}>{userData.points}</Text>
             </View>
             <View style={styles.pointsRow}>
-              <Text style={styles.pointsLabel}>Rank:</Text>
-              <Text style={styles.pointsText}>{userRank}</Text>
+              <Text style={styles.pointsLabel}>
+                Your Rank in {userData.ageGroup} Category:
+              </Text>
+              <Text style={[styles.pointsText, getRankStyle(userRank)]}>
+                {formatRank(userRank)}
+              </Text>
             </View>
           </View>
           <View style={styles.containerLog}>
             <Text style={styles.headingLog}>Your Activities</Text>
             <ActivityLog logs={logs} />
           </View>
+
           <Button
             title="Logout"
             onPress={() => {
               signOut(auth)
                 .then(() => {
                   // User signed out
-                  navigation.navigate("Auth");
+                  // navigation.navigate("Auth");
                 })
                 .catch((error) => {
                   // Handle errors here
                 });
             }}
-          ></Button>
+          />
         </View>
         <View
-          style={{ bottom: 10, left: 0, position: "absolute", width: "100%" }}
+          style={{ bottom: 0, left: 0, position: "absolute", width: "100%" }}
         >
           <ChatAssistant />
         </View>
@@ -136,6 +227,7 @@ const Profile = ({ navigation }) => {
     </ImageBackground>
   );
 };
+
 const styles = StyleSheet.create({
   background: {
     flex: 1,
@@ -222,7 +314,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#F0F0F0",
     paddingTop: 20,
     paddingHorizontal: 20,
-    //margin: 10,
     borderRadius: 10,
     width: "100%",
   },
@@ -231,6 +322,49 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     color: "black",
+  },
+  verifyButton: {
+    marginLeft: 10,
+    backgroundColor: "#2196F3",
+    borderRadius: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+  },
+  verifyButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  pointsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  pointsLabel: {
+    marginRight: 10,
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  pointsText: {
+    fontSize: 20,
+  },
+  goldRank: {
+    color: "gold",
+    fontWeight: "bold",
+    fontSize: 35,
+  },
+  silverRank: {
+    color: "silver",
+    fontWeight: "bold",
+    fontSize: 35,
+  },
+  bronzeRank: {
+    color: "peru",
+    fontWeight: "bold",
+    fontSize: 35,
+  },
+  normalRank: {
+    fontSize: 24,
+    fontWeight: "bold",
   },
 });
 

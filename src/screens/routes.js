@@ -16,6 +16,9 @@ import LandingPage from "./index";
 import ReadDailyNews from "./ReadDailyNews";
 import CertificationCategoriesPage from "./CertificationCategoriesPage";
 import CertificationDetailsPage from "./CertificationDetailsPage";
+import { auth } from "../config/firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
+import GamePage from "./Game";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -48,6 +51,7 @@ const LessonStack = () => {
     </Stack.Navigator>
   );
 };
+
 const RoadMapStack = () => {
   return (
     <Stack.Navigator initialRouteName="Cyber Security Certifications">
@@ -59,6 +63,27 @@ const RoadMapStack = () => {
       <Stack.Screen
         name="Certification Details"
         component={CertificationDetailsPage}
+        options={{ headerShown: true }}
+      />
+    </Stack.Navigator>
+  );
+};
+const HomeStack = () => {
+  return (
+    <Stack.Navigator initialRouteName="Home">
+      <Stack.Screen
+        name="Back"
+        component={Home}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Cyber Security News"
+        component={ReadDailyNews}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="Game"
+        component={GamePage}
         options={{ headerShown: true }}
       />
     </Stack.Navigator>
@@ -101,7 +126,6 @@ const AuthStack = () => {
         component={RoadMapStack}
         options={{ headerShown: true }}
       />
-    
       <Stack.Screen
         name="Login"
         component={Login}
@@ -126,7 +150,7 @@ const MainStack = () => {
     <Tab.Navigator>
       <Tab.Screen
         name="Home"
-        component={Home}
+        component={HomeStack}
         options={{ headerShown: false }}
       />
       <Tab.Screen
@@ -147,21 +171,31 @@ const MainStack = () => {
     </Tab.Navigator>
   );
 };
-
 const Navigation = () => {
+  const [user, setUser] = useState(null);
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setUser(user);
+    } else {
+      setUser(null);
+    }
+  });
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
-          name="Auth"
-          component={AuthStack}
-          options={{ headerShown: false, gestureEnabled:false }}
-        />
-        <Stack.Screen
-          name="Main"
-          component={MainStack}
-          options={{ headerShown: false, gestureEnabled:false}}
-        />
+        {user ? (
+          <Stack.Screen
+            name="Main"
+            component={MainStack}
+            options={{ headerShown: false, gestureEnabled: false }}
+          />
+        ) : (
+          <Stack.Screen
+            name="Auth"
+            component={AuthStack}
+            options={{ headerShown: false, gestureEnabled: false }}
+          />
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

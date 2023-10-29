@@ -5,11 +5,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../config/firebaseConfig";
 
 const LandingPage = ({ navigation }) => {
-  onAuthStateChanged(auth, (user) => {
-    if (user?.emailVerified) {
-      navigation.navigate("Main");
-    }
-  });
+
   return (
     <View style={styles.container}>
       <Image
@@ -56,7 +52,6 @@ const LandingPage = ({ navigation }) => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

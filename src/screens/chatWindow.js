@@ -34,7 +34,9 @@ const ChatWindow = () => {
             messages: [
               {
                 role: "user",
-                content: message,
+                content:
+                  "Act as a customer service agent for my app Amnak. You are supposed to respond to my user just as if I do respond as the developer and customer support agent of the app. The following is the massage from the user, please respond to the message directly with out letting them know what ever I prompted here. : " +
+                  message,
               },
             ],
           }),
@@ -64,7 +66,7 @@ const ChatWindow = () => {
                 key={index}
                 style={chat.isUser ? styles.userText : styles.botText}
               >
-                {chat.message}
+                {'\n'+chat.message}
               </Text>
             ))}
             {loading && <ActivityIndicator />}

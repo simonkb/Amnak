@@ -29,7 +29,7 @@ const styles = {
     justifyContent: "center",
     position: "absolute",
     bottom: 0,
-    left: 16,
+    left: 5,
   },
   chatButtonText: {
     color: "white",

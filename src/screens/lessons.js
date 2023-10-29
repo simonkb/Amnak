@@ -9,10 +9,12 @@ import {
   FlatList,
   StyleSheet,
   Alert,
+  ScrollView,
 } from "react-native";
 import { collection, doc, onSnapshot } from "firebase/firestore";
 import ChatAssistant from "./chatAssistant";
 import { db, auth } from "../config/firebaseConfig";
+import CollapsibleBar from "./CollabsibleBar";
 
 const Lessons = ({ navigation }) => {
   const handlePress = (data) => {
@@ -36,7 +38,9 @@ const Lessons = ({ navigation }) => {
   };
 
   const [userData, setUserData] = useState(null);
-  const [lessons, setLessons] = useState([]);
+  const [beginnerLessons, setBeginnerLessons] = useState([]);
+  const [intermediateLessons, setIntermediateLessons] = useState([]);
+  const [advancedLessons, setAdvancedLessons] = useState([]);
 
   const fetchUserData = async () => {
     if (auth.currentUser) {
@@ -60,19 +64,43 @@ const Lessons = ({ navigation }) => {
 
   useEffect(() => {
     if (userData) {
-      readLessons();
+      readBeginnerLessons();
+      readIntermediateLessons();
+      readAdvancedLessons();
     }
   }, [userData]);
 
-  const readLessons = () => {
-    console.log(userData.level )
+  const readBeginnerLessons = () => {
+    try {
+      const lessonsRef = collection(
+        db,
+        "/Lessons/" + userData?.ageGroup + "/Levels/" + "Beginners" + "/lessons"
+      );
+      onSnapshot(lessonsRef, (querySnapshot) => {
+        const allLessons = [];
+        querySnapshot.forEach((doc) => {
+          allLessons.push({ id: doc.id, ...doc.data() });
+        });
+        setBeginnerLessons(allLessons);
+        // if (allLessons.length === 0) {
+        //   Alert.alert(
+        //     "Message",
+        //     "We are sorry to let you know that we don't have any lesson for this level yet. We will add it asap."
+        //   );
+        // }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const readIntermediateLessons = () => {
     try {
       const lessonsRef = collection(
         db,
         "/Lessons/" +
           userData?.ageGroup +
           "/Levels/" +
-          userData.level +
+          "Intermediate" +
           "/lessons"
       );
       onSnapshot(lessonsRef, (querySnapshot) => {
@@ -80,19 +108,41 @@ const Lessons = ({ navigation }) => {
         querySnapshot.forEach((doc) => {
           allLessons.push({ id: doc.id, ...doc.data() });
         });
-        setLessons(allLessons);
-        if (allLessons.length === 0) {
-          Alert.alert(
-            "Message",
-            "We are sorry to let you know that we don't have any lesson for this level yet. We will add it asap."
-          );
-        }
+        setIntermediateLessons(allLessons);
+        // if (allLessons.length === 0) {
+        //   Alert.alert(
+        //     "Message",
+        //     "We are sorry to let you know that we don't have any lesson for this level yet. We will add it asap."
+        //   );
+        // }
       });
     } catch (error) {
       console.log(error);
     }
   };
-
+  const readAdvancedLessons = () => {
+    try {
+      const lessonsRef = collection(
+        db,
+        "/Lessons/" + userData?.ageGroup + "/Levels/" + "Advanced" + "/lessons"
+      );
+      onSnapshot(lessonsRef, (querySnapshot) => {
+        const allLessons = [];
+        querySnapshot.forEach((doc) => {
+          allLessons.push({ id: doc.id, ...doc.data() });
+        });
+        setAdvancedLessons(allLessons);
+        // if (allLessons.length === 0) {
+        //   Alert.alert(
+        //     "Message",
+        //     "We are sorry to let you know that we don't have any lesson for this level yet. We will add it asap."
+        //   );
+        // }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <ImageBackground
       source={require("../../assets/bg.jpeg")}
@@ -104,18 +154,56 @@ const Lessons = ({ navigation }) => {
             source={require("../../assets/icon.png")}
             style={styles.appIcon}
           />
-          <Text style={styles.headingText}>{userData?.level} Lessons</Text>
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: "800",
+              color: "white",
+            }}
+          >
+            Your Level is: {userData?.level}
+          </Text>
         </View>
-
-        <FlatList
-          data={lessons}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={styles.lessonsContainer}
-        />
-
         <View
-          style={{ bottom: 20, left: 0, position: "absolute", width: "100%" }}
+          // contentContainerStyle={styles.container}
+          style={styles.container}
+        >
+          <CollapsibleBar
+            title={"Beginner Lessons"}
+            isNotCurrentLevel={userData?.level !== "Beginners"}
+          >
+            <FlatList
+              data={beginnerLessons}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id.toString()}
+              contentContainerStyle={styles.lessonsContainer}
+            />
+          </CollapsibleBar>
+          <CollapsibleBar
+            title={"Intermediate Lessons"}
+            isNotCurrentLevel={userData?.level !== "Intermediate"}
+          >
+            <FlatList
+              data={intermediateLessons}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id.toString()}
+              contentContainerStyle={styles.lessonsContainer}
+            />
+          </CollapsibleBar>
+          <CollapsibleBar
+            title={"Advanced Lessons"}
+            isNotCurrentLevel={userData?.level !== "Advanced"}
+          >
+            <FlatList
+              data={advancedLessons}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id.toString()}
+              contentContainerStyle={styles.lessonsContainer}
+            />
+          </CollapsibleBar>
+        </View>
+        <View
+          style={{ bottom: 0, left: 0, position: "absolute", width: "100%" }}
         >
           <ChatAssistant />
         </View>
@@ -135,29 +223,23 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     height: "100%",
-    justifyContent: "center",
-    paddingTop: 80,
+    paddingTop: 0,
   },
   topContainer: {
     alignItems: "center",
     marginBottom: 30,
   },
   appIcon: {
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
     borderRadius: 100,
-    top: 0,
+    top: 20,
   },
-  headingText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "white",
-    marginTop: 10,
-  },
+
   lessonsContainer: {
-    width: "80%",
-    left: "10%",
-    right: "10%",
+    width: "90%",
+    left: "5%",
+    right: "5%",
   },
   lessonButton: {
     width: "100%",
@@ -171,6 +253,7 @@ const styles = StyleSheet.create({
   lessonButtonText: {
     color: "white",
     fontWeight: "bold",
+    fontSize: 16,
   },
 });
 

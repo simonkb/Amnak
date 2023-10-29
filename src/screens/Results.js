@@ -27,7 +27,7 @@ function ResultsPage({ navigation, route }) {
       return 10;
     } else if (userAnswer === correctAnswer && hintViewed) {
       //return currentQuiz.point * 0.7;
-      return 10 * 0.9;
+      return 10;
     } else {
       return 0;
     }
@@ -132,29 +132,31 @@ function ResultsPage({ navigation, route }) {
           keyExtractor={(item, index) => index.toString()}
           renderItem={renderItem}
         />
-        <View style={{
-          backgroundColor:'green',
-          width:'90%',
-          padding:20, 
-          borderRadius:15
-        }}>
+        <View
+          style={{
+            backgroundColor: "green",
+            width: "90%",
+            padding: 20,
+            borderRadius: 15,
+          }}
+        >
           <Text
             style={{
               fontSize: 24,
               fontWeight: "bold",
               marginTop: 0,
-              color:'white'
+              color: "white",
             }}
           >
             Total points earned: {totalPointsEarned}
           </Text>
         </View>
-          <Button
-            title="Back to lessons"
-            onPress={() => {
-              navigation.navigate("All Lessons");
-            }}
-          ></Button>
+        <Button
+          title="Back to lessons"
+          onPress={() => {
+            navigation.navigate("All Lessons");
+          }}
+        ></Button>
       </View>
     </View>
   );

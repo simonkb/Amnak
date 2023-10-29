@@ -165,23 +165,34 @@ const Home = ({ navigation }) => {
             <Text style={styles.quizButtonText}> Beginners Quiz</Text>
           </TouchableOpacity>
         ) : (
-          <View
-            style={{
-              width: "100%",
-              height: "100%",
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "#0A4BC9",
-                width: "100%",
-                alignSelf: "center",
+          <>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                navigation.navigate("Cyber Security News");
               }}
             >
-              <Text style={styles.headingLog}>Cyber security news</Text>
-            </View>
-            <ReadDailyNews></ReadDailyNews>
-          </View>
+              <Text style={styles.buttonText}>Cyber Security News</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                navigation.navigate("Lessons");
+              }}
+            >
+              <Text style={styles.buttonText}>Cyber Security Lessons</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                navigation.navigate("Certifications");
+              }}
+            >
+              <Text style={styles.buttonText}>
+                Cyber Security Certifications Roadmap
+              </Text>
+            </TouchableOpacity>
+          </>
         )}
         {showBeginnersQuiz && (
           <Quiz
@@ -208,7 +219,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    top: 170,
+    top: 100,
   },
   topContainer: {
     position: "absolute",
@@ -218,7 +229,7 @@ const styles = StyleSheet.create({
     width: 180,
     height: 180,
     borderRadius: 100,
-    top: 20,
+    top: 70,
   },
 
   quizButton: {
@@ -243,6 +254,20 @@ const styles = StyleSheet.create({
     minWidth: "100%",
     paddingHorizontal: 10,
     color: "white",
+  },
+  button: {
+    backgroundColor: "white",
+    paddingHorizontal: 30,
+    paddingVertical: 15,
+    borderRadius: 40,
+    marginVertical: 10,
+    minWidth: "80%",
+  },
+  buttonText: {
+    color: "black",
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 
