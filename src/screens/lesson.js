@@ -50,7 +50,6 @@ const LessonScreen = ({ navigation, route }) => {
       />
       <ScrollView style={styles.lessonContentContainer}>
         <Text style={styles.topic}>{lesson.title}</Text>
-      
         <LessonPage contents={lesson.contents}></LessonPage>
         <Button
           title={lesson.title + " Quiz"}
@@ -92,10 +91,9 @@ const styles = {
     backgroundColor: "transparent",
   },
   lessonContentContainer: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: "white",
     padding: 8,
-
     borderRadius: 15,
   },
 

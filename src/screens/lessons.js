@@ -164,10 +164,7 @@ const Lessons = ({ navigation }) => {
             Your Level is: {userData?.level}
           </Text>
         </View>
-        <View
-          // contentContainerStyle={styles.container}
-          style={styles.container}
-        >
+        <View contentContainerStyle={styles.container} style={styles.container}>
           <CollapsibleBar
             title={"Beginner Lessons"}
             isNotCurrentLevel={userData?.level !== "Beginners"}
@@ -240,6 +237,7 @@ const styles = StyleSheet.create({
     width: "90%",
     left: "5%",
     right: "5%",
+    flexGrow: 1,
   },
   lessonButton: {
     width: "100%",

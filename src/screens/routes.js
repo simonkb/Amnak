@@ -18,9 +18,12 @@ import CertificationCategoriesPage from "./CertificationCategoriesPage";
 import CertificationDetailsPage from "./CertificationDetailsPage";
 import { auth } from "../config/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
-import GamePage from "./Game";
+import Stories from "./Stories";
+import Scenarios from "./Scenarios";
+import Exercises from "./Exercises";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+import { FontAwesome } from "@expo/vector-icons";
 
 const LessonStack = () => {
   return (
@@ -82,9 +85,19 @@ const HomeStack = () => {
         options={{ headerShown: true }}
       />
       <Stack.Screen
-        name="Game"
-        component={GamePage}
+        name="Stories"
+        component={Stories}
         options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="Scenarios"
+        component={Scenarios}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="Exercises"
+        component={Exercises}
+        options={{ headerShown: true, gestureEnabled:false }}
       />
     </Stack.Navigator>
   );
@@ -152,12 +165,13 @@ const MainStack = () => {
         name="Home"
         component={HomeStack}
         options={{ headerShown: false }}
-      />
+      ></Tab.Screen>
       <Tab.Screen
-        name="Lessons"
+        name="My Learning"
         component={LessonStack}
-        options={{ headerShown: false }}
+        options={{ headerShown: true }}
       />
+
       <Tab.Screen
         name="Certifications"
         component={RoadMapStack}
@@ -166,7 +180,7 @@ const MainStack = () => {
       <Tab.Screen
         name="Profile"
         component={Profile}
-        options={{ headerShown: false }}
+        options={{ headerShown: true }}
       />
     </Tab.Navigator>
   );

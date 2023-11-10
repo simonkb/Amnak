@@ -50,7 +50,6 @@ const ChatWindow = () => {
         ]);
       } catch (error) {
         console.error("Error:", error);
-        // Handle error
       }
       setLoading(false); // Set loading state to false after receiving the API response
     }
@@ -70,7 +69,6 @@ const ChatWindow = () => {
               </Text>
             ))}
             {loading && <ActivityIndicator />}
-            {/* Display loading animation when loading is true */}
           </View>
           <View style={styles.chatInputContainer}>
             <TextInput
