@@ -97,7 +97,7 @@ const HomeStack = () => {
       <Stack.Screen
         name="Exercises"
         component={Exercises}
-        options={{ headerShown: true, gestureEnabled:false }}
+        options={{ headerShown: true, gestureEnabled: false }}
       />
     </Stack.Navigator>
   );
@@ -164,23 +164,43 @@ const MainStack = () => {
       <Tab.Screen
         name="Home"
         component={HomeStack}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome name="home" color={color} size={size} />
+          ),
+        }}
       ></Tab.Screen>
       <Tab.Screen
         name="My Learning"
         component={LessonStack}
-        options={{ headerShown: true }}
+        options={{
+          headerShown: true,
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome name="graduation-cap" color={color} size={size} />
+          ),
+        }}
       />
 
       <Tab.Screen
         name="Certifications"
         component={RoadMapStack}
-        options={{ headerShown: true }}
+        options={{
+          headerShown: true,
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome name="certificate" color={color} size={size} />
+          ),
+        }}
       />
       <Tab.Screen
         name="Profile"
         component={Profile}
-        options={{ headerShown: true }}
+        options={{
+          headerShown: true,
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome name="smile-o" color={color} size={size} />
+          ),
+        }}
       />
     </Tab.Navigator>
   );

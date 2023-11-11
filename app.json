@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "AmnakUAE",
-    "slug": "AmnakUAE",
+    "name": "Amnak",
+    "slug": "Amnak",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#335EFF"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -19,21 +19,23 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.simonkd2.AmnakUAE"
+      "bundleIdentifier": "com.simonkd2.Amnak", 
+      "buildNumber":"2"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage": "./assets/splash.png",
+        "backgroundColor": "#335EFF"
       },
-      "package": "com.simonkd2.AmnakUAE"
+      "package": "com.simonkd2.Amnak"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/icon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "bbceb03c-3ab1-4e19-a45b-79c52cd159eb"
+        "projectId": "ec91da31-f40f-4c2e-a26f-64c65dba2365"
+
       }
     },
     "owner": "simonkd2"

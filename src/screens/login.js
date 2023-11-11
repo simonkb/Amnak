@@ -101,10 +101,11 @@ const styles = StyleSheet.create({
     color: "blue",
     fontWeight: "bold",
     marginTop: 20,
+    flexDirection: "column",
   },
   container: {
     width: "80%",
-    height: "45%",
+    //height: "45%",
     backgroundColor: "white",
     padding: 20,
     borderRadius: 10,
@@ -115,6 +116,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 10,
     color: "black",
+    flexDirection: "column",
   },
   input: {
     width: "100%",
@@ -123,6 +125,7 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     marginTop: 5,
     padding: 10,
+    flexDirection: "column",
   },
   button: {
     width: "50%",
@@ -131,6 +134,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignItems: "center",
     justifyContent: "center",
+    flexDirection: "column",
   },
   buttonText: {
     color: "white",
