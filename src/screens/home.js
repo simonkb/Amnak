@@ -517,7 +517,7 @@ const Home = ({ navigation }) => {
               <FontAwesome name="tasks" size={40} color="green" />
               <Text style={styles.buttonText}>Scenarios</Text>
             </TouchableOpacity>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.button}
               onPress={() => {
                 navigation.navigate("Exercises", {
@@ -527,7 +527,7 @@ const Home = ({ navigation }) => {
             >
               <FontAwesome name="file-text" size={40} color="green" />
               <Text style={styles.buttonText}>Exercises</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </ScrollView>
         )}
         {showBeginnersQuiz && (

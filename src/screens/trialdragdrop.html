@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      .exercise-container {
+        margin-bottom: 20px;
+      }
+
+      .element-list {
+        list-style-type: none;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        display: inline-block;
+      }
+
+      .category {
+        margin: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        display: inline-block;
+      }
+
+      .category-droptarget {
+        border: 2px dashed #aaa;
+        min-height: 50px;
+      }
+
+      .element {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        margin-bottom: 5px;
+        cursor: move;
+        background-color: #f9f9f9;
+      }
+
+      .element.draggable {
+        opacity: 0.5;
+      }
+
+      .element.correct {
+        background-color: lightgreen;
+      }
+
+      .element.incorrect {
+        background-color: lightcoral;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      // Sample data for exercises
+      const exercises = [
+        {
+          question: "Exercise 1",
+          elements: [
+            { id: 1, category: "Category A", text: "Element 1A" },
+            { id: 2, category: "Category B", text: "Element 2B" },
+            { id: 3, category: "Category A", text: "Element 3A" },
+          ],
+          categories: ["Category A", "Category B"],
+        },
+        // Add more exercises as needed
+      ];
+
+      // Function to initialize exercises
+      function initializeExercises() {
+        exercises.forEach((exercise, index) => {
+          const exerciseContainer = document.createElement("div");
+          exerciseContainer.classList.add("exercise-container");
+
+          const exerciseHeader = document.createElement("h2");
+          exerciseHeader.textContent = `Exercise ${index + 1}: ${
+            exercise.question
+          }`;
+          exerciseContainer.appendChild(exerciseHeader);
+
+          exercise.categories.forEach((category) => {
+            const categoryContainer = document.createElement("div");
+            categoryContainer.classList.add("category");
+            categoryContainer.innerHTML = `<p>${category}</p>`;
+            categoryContainer.setAttribute("data-category", category);
+            categoryContainer.addEventListener("dragover", allowDrop);
+            categoryContainer.addEventListener("drop", handleDrop);
+
+            const categoryDroptarget = document.createElement("div");
+            categoryDroptarget.classList.add("category-droptarget");
+
+            categoryContainer.appendChild(categoryDroptarget);
+            exerciseContainer.appendChild(categoryContainer);
+          });
+
+          const elementList = document.createElement("ul");
+          elementList.classList.add("element-list");
+          exercise.elements.forEach((element) => {
+            const li = document.createElement("li");
+            li.classList.add("element");
+            li.setAttribute("data-id", element.id);
+            li.setAttribute("data-category", element.category);
+            li.setAttribute("draggable", "true");
+            li.textContent = element.text;
+            li.addEventListener("dragstart", handleDragStart);
+            elementList.appendChild(li);
+          });
+
+          exerciseContainer.appendChild(elementList);
+          document.body.appendChild(exerciseContainer);
+        });
+      }
+
+      // Function to handle drag start
+      function handleDragStart(event) {
+        event.dataTransfer.setData("text/plain", event.target.dataset.id);
+        event.target.classList.add("draggable");
+      }
+
+      // Function to allow drop
+      function allowDrop(event) {
+        event.preventDefault();
+      }
+
+      // Function to handle drop
+      function handleDrop(event) {
+        event.preventDefault();
+        const draggedElementId = event.dataTransfer.getData("text/plain");
+        const draggedElement = document.querySelector(
+          `[data-id="${draggedElementId}"]`
+        );
+        const dropTargetCategory = event.currentTarget.dataset.category;
+
+        // Remove the dragged element from its original position
+        draggedElement.parentNode.removeChild(draggedElement);
+
+        // Append the dragged element to the drop target
+        event.currentTarget
+          .querySelector(".category-droptarget")
+          .appendChild(draggedElement);
+
+        // Check if the dropped element is in the correct category
+        const isCorrectCategory =
+          draggedElement.dataset.category === dropTargetCategory;
+
+        // Apply styling based on correctness
+        draggedElement.classList.remove("draggable", "correct", "incorrect");
+        draggedElement.classList.add(
+          isCorrectCategory ? "correct" : "incorrect"
+        );
+      }
+
+      // Initialize exercises on page load
+      window.addEventListener("load", initializeExercises);
+    </script>
+  </body>
+</html>
