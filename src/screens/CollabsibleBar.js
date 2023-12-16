@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 const CollapsibleBar = ({ title, children, isNotCurrentLevel }) => {
-  const [isCollapsed, setIsCollapsed] = useState(isNotCurrentLevel);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };

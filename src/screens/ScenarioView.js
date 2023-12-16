@@ -37,7 +37,7 @@ const ScenarioView = ({ item }) => {
             messages: [
               {
                 role: "user",
-                content: `Act as a smart trainer in my Amnak app. In the app the user is presented with a scenario with title ${item.title}. After that the user was given with this ${item.scenario} scenario and the correct answer expected is ${item.answers}. Here are the multiple choices provided to the user ${item.choices}. This is only if the question is multiple choice type. Here is the user's answer ${response}. Write a 20 words short explanation for the user based on the user's response and the given answer. Motivate the user in your response. Your goal is making the user learn.`,
+                content: `Act as a smart trainer in my Amnak app. In the app the user is presented with a scenario with title ${item.title}. After that the user was given with this ${item.scenario} scenario and the correct answer expected or all possible answer is ${item.answers}. Here are the multiple choices provided to the user ${item.choices} if the choices has only one element (writing) then it is a writing question so you should respond to the user's response. Here is the user's answer ${response}. Write a 20 words short explanation for the user based on the user's response and the given answer. Make sure the user response is correct or not based on the scenario. Your goal is making the user learn.`,
               },
             ],
           }),
@@ -52,13 +52,27 @@ const ScenarioView = ({ item }) => {
       setSubmitting(false);
     }
   };
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
     <View style={styles.scenarioItem}>
-      <Image source={{ uri: item.imageUrl }} style={styles.scenarioImage} />
+      <View>
+        <Image
+          onLoad={() => {
+            setImageLoaded(true);
+          }}
+          source={{ uri: item.imageUrl }}
+          style={styles.scenarioImage}
+        />
+        {!imageLoaded && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="green" />
+          </View>
+        )}
+      </View>
       <Text style={styles.scenarioTitle}>{item.title}</Text>
       <Text style={styles.scenarioDescription}>{item.scenario}</Text>
-      {item.questionType === "writing" ? (
+      {item.choices[0] === "writing" ? (
         <TextInput
           style={styles.textInput}
           multiline={true}
@@ -127,6 +141,17 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 10,
     marginBottom: 10,
+  },
+  loadingContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.9)", // Semi-transparent background
+    borderRadius: 5,
   },
   scenarioTitle: {
     fontSize: 18,

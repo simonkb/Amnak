@@ -22,37 +22,15 @@ import {
 } from "firebase/firestore";
 import { useRoute } from "@react-navigation/native";
 import { API_URL, API_KEY } from "../config/firebaseConfig";
+import PdfViewer from "./PdfViewer";
+import CollapsibleBar from "./CollabsibleBar";
 
 const Stories = ({ navigation }) => {
   var route = useRoute();
   const userData = route.params.userData;
-  const [stories, setStories] = useState([
-    {
-      title: "Ahmed and Ali Social Media Adventures",
-      url: "https://firebasestorage.googleapis.com/v0/b/amnak-uae.appspot.com/o/videos%2FAhmed-and-Ali-Social-Media-Adventures.mp4?alt=media&token=afc389f7-0881-45de-8e13-1522d68f90e3&_gl=1*hn4xm4*_ga*MzU2MjA5MjA0LjE2ODUwOTEzODM.*_ga_CW55HF8NVT*MTY5ODc2Mjg0Ny40Ni4xLjE2OTg3NjMxMjYuNTQuMC4w",
-      question:
-        "Write down a list of things you have learned after going through this story.",
-      answers: [
-        "Think before post.",
-        "Be respectful.",
-        "Stay safe.",
-        "Share positivity.",
-        "Never try dangerous things.",
-        "Never share personal information.",
-        "Ask a trusted adult.",
-      ],
-    },
-  ]);
-
-  // const onSubmit = (story) => {
-  //   const collectionRef = collection(
-  //     db,
-  //     "/Lessons/Under_14/Levels/Beginners/Stories"
-  //   );
-  //   setDoc(doc(collectionRef, story.title), story).catch((error) => {
-  //     Alert.alert(error.errorCode, error.message);
-  //   });
-  // };
+  const [storiesBeg, setStoriesBeg] = useState([]);
+  const [storiesInt, setStoriesInt] = useState([]);
+  const [storiesAdv, setStoriesAdv] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,7 +41,7 @@ const Stories = ({ navigation }) => {
             "Lessons",
             userData?.ageGroup,
             "Levels",
-            userData?.level,
+            "Beginners",
             "Stories"
           )
         );
@@ -71,23 +49,71 @@ const Stories = ({ navigation }) => {
         querySnapshot.forEach((doc) => {
           list.push(doc.data());
         });
-        setStories(list);
+        setStoriesBeg(list);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-    if (userData) fetchData();
+    const fetchData2 = async () => {
+      try {
+        const querySnapshot = await getDocs(
+          collection(
+            db,
+            "Lessons",
+            userData?.ageGroup,
+            "Levels",
+            "Intermediate",
+            "Stories"
+          )
+        );
+        var list = [];
+        querySnapshot.forEach((doc) => {
+          list.push(doc.data());
+        });
+        setStoriesInt(list);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    const fetchData3 = async () => {
+      try {
+        const querySnapshot = await getDocs(
+          collection(
+            db,
+            "Lessons",
+            userData?.ageGroup,
+            "Levels",
+            "Advanced",
+            "Stories"
+          )
+        );
+        var list = [];
+        querySnapshot.forEach((doc) => {
+          list.push(doc.data());
+        });
+        setStoriesAdv(list);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    if (userData) {
+      fetchData();
+      fetchData2();
+      fetchData3();
+    }
   }, []);
 
   const renderItem = ({ item }) => {
     return (
       <View style={styles.storyItem}>
-        <VideoPlayer
-          videoUri={item.url}
-          title={item.title}
-          question={item.question}
-          answers={item.answers}
-        />
+        <TouchableOpacity
+          style={styles.lessonButton}
+          onPress={() => {
+            navigation.navigate("Story", { data: item });
+          }}
+        >
+          <Text style={styles.lessonButtonText}>{item.title}</Text>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -107,22 +133,48 @@ const Stories = ({ navigation }) => {
           onSubmit(stories[0]);
         }}
       ></Button> */}
-      {stories.length === 0 ? (
-        <Text style={styles.emptyMessage}>
-          Sorry, we don't have stories for this category yet.
-        </Text>
-      ) : (
-        <FlatList
-          data={stories}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.title}
-          contentContainerStyle={{
-            width: "96%",
-            alignSelf: "center",
-            paddingBottom: 600,
-          }}
-        />
-      )}
+      <CollapsibleBar title={"Beginner Stories"}>
+        {storiesBeg.length === 0 ? (
+          <Text style={styles.emptyMessage}>
+            Sorry, we don't have stories for this category yet.
+          </Text>
+        ) : (
+          <FlatList
+            data={storiesBeg}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.title}
+            contentContainerStyle={styles.lessonsContainer}
+          />
+        )}
+      </CollapsibleBar>
+      <CollapsibleBar title={"Intermediate Stories"}>
+        {storiesInt.length === 0 ? (
+          <Text style={styles.emptyMessage}>
+            Sorry, we don't have stories for this category yet.
+          </Text>
+        ) : (
+          <FlatList
+            data={storiesInt}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.title}
+            contentContainerStyle={styles.lessonsContainer}
+          />
+        )}
+      </CollapsibleBar>
+      <CollapsibleBar title={"Advanced Stories"}>
+        {storiesAdv.length === 0 ? (
+          <Text style={styles.emptyMessage}>
+            Sorry, we don't have stories for this category yet.
+          </Text>
+        ) : (
+          <FlatList
+            data={storiesAdv}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.title}
+            contentContainerStyle={styles.lessonsContainer}
+          />
+        )}
+      </CollapsibleBar>
     </View>
   );
 };
@@ -165,6 +217,26 @@ const styles = StyleSheet.create({
     color: "white",
     justifyContent: "center",
     fontWeight: "500",
+  },
+  lessonButton: {
+    width: "100%",
+    height: 40,
+    backgroundColor: "green",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 10,
+    marginVertical: 10,
+  },
+  lessonButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  lessonsContainer: {
+    width: "90%",
+    left: "5%",
+    right: "5%",
+    flexGrow: 1,
   },
 });
 

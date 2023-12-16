@@ -3,38 +3,13 @@ import { View, Text, FlatList, StyleSheet } from "react-native";
 
 const ActivityLogItem = ({ log }) => {
   const getStatusColor = () => {
-    // const totalPoints = log.selectedAnswers.length * 10;
-    // let percent = (log.pointsEarned / totalPoints) * 100;
-    // if (percent >= 90) {
-    //   return "green";
-    // } else if (percent < 60) {
-    //   return "red";
-    // } else {
-    //   const yellowValue = ((percent - 60) / 30) * 255;
-    //   const redValue = (1 - (percent - 60) / 30) * 255;
-    //   const greenValue = ((90 - percent) / 30) * 255;
-    //   return `rgb(${redValue}, ${yellowValue}, ${greenValue})`;
-    // }
     const totalPoints = log.selectedAnswers.length * 10;
-    let percent = (log.pointEarned / totalPoints) * 100;
-    percent = 16;
+    let percent = (log.pointsEarned / totalPoints) * 100;
     if (percent >= 80) {
-      const redValue = 255;
-      const greenValue = 0;
-      const blueValue = 0;
-      //return `rgb(${redValue}, ${greenValue}, ${blueValue})`;
       return "green";
     } else if (percent < 60) {
-      const redValue = 255;
-      const greenValue = 255;
-      const blueValue = 0;
-      // return `rgb(${redValue}, ${greenValue}, ${blueValue})`;
       return "red";
     } else {
-      const redValue = ((percent - 60) / 30) * 255;
-      const greenValue = ((90 - percent) / 30) * 255;
-      const blueValue = 0;
-      //return `rgb(${redValue}, ${greenValue}, ${blueValue})`;
       return "yellow";
     }
   };
@@ -45,12 +20,12 @@ const ActivityLogItem = ({ log }) => {
         style={[styles.logItemStatus, { backgroundColor: getStatusColor() }]}
       />
       <View style={styles.logItemContent}>
-        <Text style={styles.logItemName}>{log.taskName}</Text>
+        <Text style={styles.logItemName}>Activity: {log.taskName}</Text>
         <Text style={styles.logItemDate}>
-          {new Date(log.dateCompleted).toLocaleDateString()}
+          Date: {new Date(log.dateCompleted).toDateString()}
         </Text>
         <Text style={styles.logItemPoints}>
-          {log.pointsEarned} out of {log.selectedAnswers.length * 10} Points
+          Grade: {log.pointsEarned} out of {log.selectedAnswers.length * 10} Points.
         </Text>
       </View>
     </View>
@@ -61,7 +36,7 @@ const ActivityLog = (props) => {
   return (
     <FlatList
       data={props.logs}
-      keyExtractor={(log) => log.taskName}
+      keyExtractor={(log) => log.taskName + log.dateCompleted}
       renderItem={({ item }) => <ActivityLogItem log={item} />}
       style={styles.logList}
     />
@@ -73,7 +48,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F0F0F0",
     paddingTop: 60,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   heading: {
     fontSize: 24,
@@ -81,7 +56,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logList: {
-    marginTop: 20,
+    marginTop: 0,
   },
   logItemContainer: {
     flexDirection: "row",

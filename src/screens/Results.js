@@ -60,7 +60,7 @@ function ResultsPage({ navigation, route }) {
             setUserData(doc.data());
           });
           if (!isSaved) {
-            setDoc(doc(db, `Users/${uid}/TasksCompleted`, quizTitle), {
+            setDoc(doc(db, `Users/${uid}/TasksCompleted`, quizTitle + "-"+new Date().getTime()), {
               taskName: `Completed ${quizTitle} and its quiz.`,
               dateCompleted: new Date().getTime(),
               selectedAnswers: selectedAnswers,

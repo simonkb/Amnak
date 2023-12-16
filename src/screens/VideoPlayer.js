@@ -1,23 +1,19 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
-  BackHandler,
-} from "react-native";
+import React, { useRef, useState } from "react";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { Video } from "expo-av";
 
 const VideoPlayer = ({ videoUri }) => {
   const videoRef = useRef(null);
   const [status, setStatus] = useState({});
-  const [isFullScreen, setIsFullScreen] = useState(false);
-  const width = isFullScreen ? Dimensions.get("window").width : "100%";
-  const height = isFullScreen ? Dimensions.get("window").height : "60%";
+  const [isVideoReady, setIsVideoReady] = useState(false);
+
+  const handleOnReadyForDisplay = () => {
+    setIsVideoReady(true);
+  };
 
   return (
     <View style={{ width: "100%", height: "100%" }}>
-      <View style={[styles.container, { width, height, aspectRatio: 16 / 9 }]}>
+      <View style={[styles.container, { aspectRatio: 16 / 9 }]}>
         <Video
           ref={videoRef}
           style={styles.video}
@@ -26,7 +22,13 @@ const VideoPlayer = ({ videoUri }) => {
           resizeMode="contain"
           isLooping
           onPlaybackStatusUpdate={setStatus}
+          onReadyForDisplay={handleOnReadyForDisplay}
         />
+        {!isVideoReady && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="blue" />
+          </View>
+        )}
       </View>
     </View>
   );
@@ -34,27 +36,20 @@ const VideoPlayer = ({ videoUri }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#000",
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
-    opacity: 0.9,
-    borderRadius: 15,
-    alignSelf: "stretch",
+    borderRadius: 5,
+    overflow: "hidden",
   },
   video: {
     width: "100%",
     height: "100%",
-    flex: 1,
-    aspectRatio: 16 / 9,
-    resizeMode: "contain",
   },
-  controlsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+  loadingContainer: {
+    ...StyleSheet.absoluteFillObject,
     justifyContent: "center",
-    marginTop: 5,
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
 });
 

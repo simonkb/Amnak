@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, Button, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 
 function Quiz(props) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -106,13 +113,13 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     minWidth: "98%",
-    maxWidth:'98%',
-    alignSelf:'center',
+    maxWidth: "98%",
+    alignSelf: "center",
     borderRadius: 5,
     padding: 20,
     opacity: 0.95,
     marginBottom: 5,
-    paddingBottom:200
+    paddingBottom: 200,
   },
   questionNumber: {
     fontSize: 18,

@@ -11,10 +11,11 @@ import {
 } from "react-native";
 import VideoPlayer from "./VideoPlayer";
 import { FontAwesome } from "@expo/vector-icons";
+import PdfViewer from "./PdfViewer";
 
 const LessonPage = (props) => {
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       {props.contents.map((content, index) => (
         <View key={index}>
           {content.type === "topic" ? (
@@ -74,12 +75,16 @@ const LessonPage = (props) => {
                 <Text style={styles.link}>{content.url}</Text>
               </View>
             </TouchableOpacity>
+          ) : content.type == "pdf" ? (
+            <ScrollView>
+              <PdfViewer source={{ uri: content.url, cache: true }}></PdfViewer>
+            </ScrollView>
           ) : (
             <Text></Text>
           )}
         </View>
       ))}
-    </ScrollView>
+    </View>
   );
 };
 
@@ -87,7 +92,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F2F2F2",
-    paddingHorizontal: 16,
+    paddingHorizontal: 5,
     paddingVertical: 8,
   },
   topicContainer: {

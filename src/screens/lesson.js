@@ -10,7 +10,6 @@ import {
 import { db, storage, auth } from "../config/firebaseConfig";
 import { collection, doc, setDoc, getDocs, getDoc } from "firebase/firestore";
 import LessonPage from "./lessonsBb";
-
 const LessonScreen = ({ navigation, route }) => {
   const { lesson } = route.params;
   const [expanded, setExpanded] = useState(null);
@@ -42,22 +41,28 @@ const LessonScreen = ({ navigation, route }) => {
         });
     }
   };
+  const source = {
+    uri: "https://firebasestorage.googleapis.com/v0/b/amnak-uae.appspot.com/o/Pdfs%2Fbeginner_Lesson%201.pdf?alt=media&token=5bafa18c-00e7-43f9-ac9a-78133c58c0d9",
+    cache: true,
+  };
   return (
     <View style={styles.container}>
       <Image
         source={require("../../assets/bg.jpeg")}
         style={styles.backgroundImage}
       />
-      <ScrollView style={styles.lessonContentContainer}>
+      <View style={styles.lessonContentContainer}>
         <Text style={styles.topic}>{lesson.title}</Text>
         <LessonPage contents={lesson.contents}></LessonPage>
-        <Button
-          title={lesson.title + " Quiz"}
-          onPress={() => {
-            handleQuizPressed(lesson.title, lesson.quiz);
-          }}
-        ></Button>
-      </ScrollView>
+        {lesson.quiz && (
+          <Button
+            title={lesson.title + " Quiz"}
+            onPress={() => {
+              handleQuizPressed(lesson.title, lesson.quiz);
+            }}
+          ></Button>
+        )}
+      </View>
     </View>
   );
 };

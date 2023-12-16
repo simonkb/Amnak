@@ -1,589 +1,3 @@
-// // import React, { useState, useEffect } from "react";
-// // import {
-// //   View,
-// //   Text,
-// //   TextInput,
-// //   ImageBackground,
-// //   TouchableOpacity,
-// //   StyleSheet,
-// //   Alert,
-// //   ActivityIndicator,
-// //   Button,
-// //   Animated,
-// // } from "react-native";
-// // import DateTimePicker from "@react-native-community/datetimepicker";
-// // import {
-// //   createUserWithEmailAndPassword,
-// //   sendEmailVerification,
-// //   onAuthStateChanged,
-// // } from "firebase/auth";
-// // import { collection, doc, setDoc } from "firebase/firestore";
-// // import { db, auth } from "../config/firebaseConfig.js";
-
-// // const Signup = ({ navigation }) => {
-// //   const [username, setUsername] = useState("");
-// //   const [email, setEmail] = useState("");
-// //   const [password, setPassword] = useState("");
-// //   const [confirmPassword, setConfirmPassword] = useState("");
-// //   const [loading, setLoading] = useState(false);
-// //   const [date, setDate] = useState(new Date());
-// //   const [user, setUser] = useState(null);
-// //   const handleSignup = () => {
-// //     // Validate form fields
-// //     if (!username || !email || !password || !confirmPassword || !date) {
-// //       alert("Please fill in all required fields.");
-// //       return;
-// //     }
-
-// //     // Validate email format using regex
-// //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// //     if (!emailRegex.test(email)) {
-// //       alert("Please enter a valid email address.");
-// //       return;
-// //     }
-
-// //     // Check if password matches confirm password
-// //     if (password !== confirmPassword) {
-// //       alert("Passwords do not match.");
-// //       return;
-// //     }
-
-// //     let today = new Date();
-// //     let age = today.getFullYear() - date.getFullYear();
-// //     if ((age < 5) | (age > 100)) {
-// //       alert("Please enter a valid date of birth.");
-// //       return;
-// //     }
-// //     let ageGroup;
-
-// //     if (age < 14) {
-// //       ageGroup = "Under_14";
-// //     } else if (age >= 15 && age <= 18) {
-// //       ageGroup = "15_18";
-// //     } else if (age >= 19) {
-// //       ageGroup = "19_and_above";
-// //     } else {
-// //       ageGroup = "Employee";
-// //     }
-
-// //     createUserWithEmailAndPassword(auth, email, password)
-// //       .then((userCredential) => {
-// //         setUser(userCredential.user);
-// //         sendEmailVerification(userCredential.user)
-// //           .then(() => {
-// //             Alert.alert(
-// //               "Verify email",
-// //               "We have sent you a link to verify your email."
-// //             );
-// //             setLoading(true);
-// //             navigation.navigate("Login");
-// //           })
-// //           .catch((error) => {
-// //             setLoading(false);
-// //             Alert.alert("Error", error.message);
-// //           });
-// //         const usersRef = collection(db, "Users");
-// //         setDoc(doc(usersRef, userCredential.user.uid), {
-// //           username: username,
-// //           email_address: email,
-// //           birthDate: date.getTime(),
-// //           level: "Beginners",
-// //           points: 0,
-// //           ageGroup: ageGroup,
-// //           isFirstTime: true,
-// //         }).catch((error) => {
-// //           Alert.alert(error.errorCode, error.message);
-// //         });
-// //       })
-// //       .catch((error) => {
-// //         setLoading(false);
-// //         Alert.alert("Error", error.message);
-// //       });
-// //   };
-
-// //   const [shakeAnimation, setShakeAnimation] = useState(new Animated.Value(0));
-// //   const shake = () => {
-// //     Animated.sequence([
-// //       Animated.timing(shakeAnimation, {
-// //         toValue: 10,
-// //         duration: 100,
-// //         useNativeDriver: true,
-// //       }),
-// //       Animated.timing(shakeAnimation, {
-// //         toValue: -10,
-// //         duration: 100,
-// //         useNativeDriver: true,
-// //       }),
-// //       Animated.timing(shakeAnimation, {
-// //         toValue: 10,
-// //         duration: 100,
-// //         useNativeDriver: true,
-// //       }),
-// //       Animated.timing(shakeAnimation, {
-// //         toValue: 0,
-// //         duration: 100,
-// //         useNativeDriver: true,
-// //       }),
-// //     ]).start();
-// //   };
-
-// //   const handlePress = () => {
-// //     navigation.navigate("Login");
-// //   };
-
-// //   const buttonStyle = {
-// //     transform: [{ translateX: shakeAnimation }],
-// //   };
-// //   const [show, setShow] = useState(Platform.OS === "ios");
-// //   const [mode, setMode] = useState("date");
-
-// //   return (
-// //     <ImageBackground
-// //       source={require("../../assets/bg.jpeg")}
-// //       style={styles.background}
-// //     >
-// //       <View style={styles.container}>
-// //         <Text style={styles.label}>Username</Text>
-// //         <TextInput
-// //           style={styles.input}
-// //           onChangeText={(text) => setUsername(text)}
-// //           value={username}
-// //         />
-// //         <Text style={styles.label}>Email</Text>
-// //         <TextInput
-// //           style={styles.input}
-// //           onChangeText={(text) => setEmail(text)}
-// //           value={email}
-// //           autoCapitalize="none"
-// //         />
-// //         <Text style={styles.label}>Password</Text>
-// //         <TextInput
-// //           style={styles.input}
-// //           secureTextEntry={true}
-// //           onChangeText={(text) => setPassword(text)}
-// //           value={password}
-// //           autoCapitalize="none"
-// //         />
-// //         <Text style={styles.label}>Confirm Password</Text>
-// //         <TextInput
-// //           style={styles.input}
-// //           secureTextEntry={true}
-// //           onChangeText={(text) => setConfirmPassword(text)}
-// //           value={confirmPassword}
-// //           autoCapitalize="none"
-// //         />
-// //         <Text style={styles.label}>Date of Birth</Text>
-// //         <View
-// //           style={{
-// //             flexDirection: "row",
-// //             marginHorizontal: "10%",
-// //             marginTop: 10,
-// //           }}
-// //         >
-// //           <View>
-// //             <TouchableOpacity onPress={() => setShow(true)}>
-// //               {Platform.OS === "ios" ? (
-// //                 <Text style={{ fontSize: 0 }}></Text>
-// //               ) : (
-// //                 <Text style={{ fontSize: 18 }}>
-// //                   {date.toLocaleDateString()}
-// //                 </Text>
-// //               )}
-// //             </TouchableOpacity>
-// //           </View>
-
-// //           <View style={{ minWidth: 130 }}>
-// //             {show && (
-// //               <DateTimePicker
-// //                 testID="dateTimePicker"
-// //                 value={date}
-// //                 mode={mode}
-// //                 display="default"
-// //                 is24Hour={true}
-// //                 onChange={(event, selectedDate) => {
-// //                   setShow(Platform.OS === "ios");
-// //                   if (selectedDate) setDate(selectedDate);
-// //                 }}
-// //               />
-// //             )}
-// //           </View>
-// //         </View>
-// //         <TouchableOpacity style={styles.button} onPress={handleSignup}>
-// //           <Text style={styles.buttonText}>Sign up</Text>
-// //         </TouchableOpacity>
-// //         <TouchableOpacity
-// //           style={styles.login}
-// //           onPress={() => navigation.navigate("Login")}
-// //         >
-// //           <Text style={styles.loginText}>Already have an account? Login</Text>
-// //         </TouchableOpacity>
-// //       </View>
-// //     </ImageBackground>
-// //   );
-// // };
-
-// // const styles = StyleSheet.create({
-// //   background: {
-// //     flex: 1,
-// //     width: "100%",
-// //     height: "100%",
-// //     alignItems: "center",
-// //     justifyContent: "center",
-// //   },
-// //   container: {
-// //     width: "90%",
-// //     height: "90%",
-// //     backgroundColor: "white",
-// //     padding: 20,
-// //     borderRadius: 10,
-// //     alignItems: "center",
-// //     opacity: 0.8,
-// //   },
-// //   label: {
-// //     fontSize: 16,
-// //     marginTop: 20,
-// //   },
-// //   input: {
-// //     width: "100%",
-// //     height: 40,
-// //     borderColor: "gray",
-// //     borderWidth: 1,
-// //     marginTop: 10,
-// //     padding: 10,
-// //   },
-// //   button: {
-// //     backgroundColor: "blue",
-// //     width: "50%",
-// //     height: 40,
-// //     alignItems: "center",
-// //     justifyContent: "center",
-// //     marginTop: 20,
-// //   },
-// //   buttonText: {
-// //     color: "white",
-// //     fontWeight: "bold",
-// //   },
-// //   login: {
-// //     width: "100%",
-// //     height: 40,
-// //     alignItems: "center",
-// //     justifyContent: "center",
-// //     marginTop: 10,
-// //   },
-// //   loginText: {
-// //     color: "blue",
-// //     fontWeight: "bold",
-// //   },
-// //   loading: {
-// //     flex: 1,
-// //     justifyContent: "center",
-// //   },
-// //   loadingText: {
-// //     color: "blue",
-// //     justifyContent: "center",
-
-// //     fontSize: 18,
-// //   },
-// //   overlay: {
-// //     ...StyleSheet.absoluteFill,
-// //     backgroundColor: "rgba(0, 0, 0, 0.5)",
-// //     justifyContent: "center",
-// //     alignItems: "center",
-// //   },
-// //   done: {
-// //     backgroundColor: "green",
-// //   },
-// // });
-
-// // export default Signup;
-
-// import React, { useState, useEffect } from "react";
-// import {
-//   View,
-//   Text,
-//   TextInput,
-//   ImageBackground,
-//   TouchableOpacity,
-//   StyleSheet,
-//   Alert,
-//   ActivityIndicator,
-//   Button,
-//   Animated,
-// } from "react-native";
-// import DateTimePicker from "@react-native-community/datetimepicker";
-// import {
-//   createUserWithEmailAndPassword,
-//   sendEmailVerification,
-//   onAuthStateChanged,
-// } from "firebase/auth";
-// import { collection, doc, setDoc } from "firebase/firestore";
-// import { db, auth } from "../config/firebaseConfig.js";
-
-// const Signup = ({ navigation }) => {
-//   const [username, setUsername] = useState("");
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [confirmPassword, setConfirmPassword] = useState("");
-//   const [loading, setLoading] = useState(false);
-//   const [date, setDate] = useState(new Date());
-//   const [user, setUser] = useState(null);
-//   const [emailVerified, setEmailVerified] = useState(false);
-//   const [shakeAnimation, setShakeAnimation] = useState(new Animated.Value(0));
-//   const [show, setShow] = useState(Platform.OS === "ios");
-//   const [mode, setMode] = useState("date");
-
-//   const handleSignup = () => {
-//     // Validate form fields
-//     if (!username || !email || !password || !confirmPassword || !date) {
-//       alert("Please fill in all required fields.");
-//       return;
-//     }
-
-//     // Validate email format using regex
-//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//     if (!emailRegex.test(email)) {
-//       alert("Please enter a valid email address.");
-//       return;
-//     }
-
-//     // Check if password matches confirm password
-//     if (password !== confirmPassword) {
-//       alert("Passwords do not match.");
-//       return;
-//     }
-
-//     let today = new Date();
-//     let age = today.getFullYear() - date.getFullYear();
-//     if ((age < 5) | (age > 100)) {
-//       alert("Please enter a valid date of birth.");
-//       return;
-//     }
-//     let ageGroup;
-
-//     if (age < 14) {
-//       ageGroup = "Under_14";
-//     } else if (age >= 15 && age <= 18) {
-//       ageGroup = "15_18";
-//     } else if (age >= 19) {
-//       ageGroup = "19_and_above";
-//     } else {
-//       ageGroup = "Employee";
-//     }
-
-//     setLoading(true); // Show loading overlay
-
-//     createUserWithEmailAndPassword(auth, email, password)
-//       .then((userCredential) => {
-//         setUser(userCredential.user);
-
-//         // Check if email is already verified
-//         if (userCredential.user.emailVerified) {
-//           setEmailVerified(true);
-//           setLoading(false);
-//           navigation.navigate("Main");
-//         } else {
-//           sendEmailVerification(userCredential.user)
-//             .then(() => {
-//               Alert.alert(
-//                 "Verify email",
-//                 "We have sent you a link to verify your email."
-//               );
-//             })
-//             .catch((error) => {
-//               setLoading(false);
-//               Alert.alert("Error", error.message);
-//             });
-//           const usersRef = collection(db, "Users");
-//           setDoc(doc(usersRef, userCredential.user.uid), {
-//             username: username,
-//             email_address: email,
-//             birthDate: date.getTime(),
-//             level: "Beginners",
-//             points: 0,
-//             ageGroup: ageGroup,
-//             isFirstTime: true,
-//           }).catch((error) => {
-//             Alert.alert(error.errorCode, error.message);
-//           });
-//         }
-//       })
-//       .catch((error) => {
-//         setLoading(false);
-//         Alert.alert("Error", errormessage);
-//       });
-//   };
-
-//   const checkEmailVerification = () => {
-//     onAuthStateChanged(auth, (user) => {
-//       if (user && user.emailVerified) {
-//         setEmailVerified(true);
-//         setLoading(false);
-//       }
-//     });
-//   };
-
-//   useEffect(() => {
-//     checkEmailVerification();
-//   }, []);
-
-//   return (
-//     <ImageBackground
-//       source={require("../../assets/bg.jpeg")}
-//       style={styles.background}
-//     >
-//       <View style={styles.container}>
-//         {loading && (
-//           <View style={styles.overlay}>
-//             <ActivityIndicator size="large" color="blue" />
-//             <Text style={styles.loadingText}>Signing up...</Text>
-//           </View>
-//         )}
-
-//         <Text style={styles.label}>Username</Text>
-//         <TextInput
-//           style={styles.input}
-//           onChangeText={(text) => setUsername(text)}
-//           value={username}
-//         />
-//         <Text style={styles.label}>Email</Text>
-//         <TextInput
-//           style={styles.input}
-//           onChangeText={(text) => setEmail(text)}
-//           value={email}
-//           autoCapitalize="none"
-//         />
-//         <Text style={styles.label}>Password</Text>
-//         <TextInput
-//           style={styles.input}
-//           secureTextEntry={true}
-//           onChangeText={(text) => setPassword(text)}
-//           value={password}
-//           autoCapitalize="none"
-//         />
-//         <Text style={styles.label}>Confirm Password</Text>
-//         <TextInput
-//           style={styles.input}
-//           secureTextEntry={true}
-//           onChangeText={(text) => setConfirmPassword(text)}
-//           value={confirmPassword}
-//           autoCapitalize="none"
-//         />
-//         <Text style={styles.label}>Date of Birth</Text>
-//         <View
-//           style={{
-//             flexDirection: "row",
-//             marginHorizontal: "10%",
-//             marginTop: 10,
-//           }}
-//         >
-//           <View>
-//             <TouchableOpacity onPress={() => setShow(true)}>
-//               {Platform.OS === "ios" ? (
-//                 <Text style={{ fontSize: 0 }}></Text>
-//               ) : (
-//                 <Text style={{ fontSize: 18 }}>
-//                   {date.toLocaleDateString()}
-//                 </Text>
-//               )}
-//             </TouchableOpacity>
-//           </View>
-
-//           <View style={{ minWidth: 130 }}>
-//             {show && (
-//               <DateTimePicker
-//                 testID="dateTimePicker"
-//                 value={date}
-//                 mode={mode}
-//                 display="default"
-//                 is24Hour={true}
-//                 onChange={(event, selectedDate) => {
-//                   setShow(Platform.OS === "ios");
-//                   if (selectedDate) setDate(selectedDate);
-//                 }}
-//               />
-//             )}
-//           </View>
-//         </View>
-//         <TouchableOpacity style={styles.button} onPress={handleSignup}>
-//           <Text style={styles.buttonText}>Sign up</Text>
-//         </TouchableOpacity>
-//         <TouchableOpacity
-//           style={styles.login}
-//           onPress={() => navigation.navigate("Login")}
-//         >
-//           <Text style={styles.loginText}>Already have an account? Login</Text>
-//         </TouchableOpacity>
-//       </View>
-//     </ImageBackground>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   background: {
-//     flex: 1,
-//     width: "100%",
-//     height: "100%",
-//     alignItems: "center",
-//     justifyContent: "center",
-//   },
-//   container: {
-//     width: "90%",
-//     height: "90%",
-//     backgroundColor: "white",
-//     padding: 20,
-//     borderRadius: 10,
-//     alignItems: "center",
-//     opacity: 0.8,
-//   },
-//   label: {
-//     fontSize: 16,
-//     marginTop: 20,
-//   },
-//   input: {
-//     width: "100%",
-//     height: 40,
-//     borderColor: "gray",
-//     borderWidth: 1,
-//     marginTop: 10,
-//     padding: 10,
-//   },
-//   button: {
-//     backgroundColor: "blue",
-//     width: "50%",
-//     height: 40,
-//     alignItems: "center",
-//     justifyContent: "center",
-//     marginTop: 20,
-//   },
-//   buttonText: {
-//     color: "white",
-//     fontWeight: "bold",
-//   },
-//   login: {
-//     width: "100%",
-//     height: 40,
-//     alignItems: "center",
-//     justifyContent: "center",
-//     marginTop: 10,
-//   },
-//   loginText: {
-//     color: "blue",
-//     fontWeight: "bold",
-//   },
-//   loadingText: {
-//     color: "blue",
-//     justifyContent: "center",
-//     fontSize: 18,
-//   },
-//   overlay: {
-//     ...StyleSheet.absoluteFill,
-//     backgroundColor: "rgba(0, 0, 0, 0.5)",
-//     justifyContent: "center",
-//     alignItems: "center",
-//   },
-// });
-
-// export default Signup;
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -594,8 +8,7 @@ import {
   StyleSheet,
   Alert,
   ActivityIndicator,
-  Button,
-  Animated,
+  Animated, ScrollView
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import {
@@ -605,6 +18,7 @@ import {
 } from "firebase/auth";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { db, auth } from "../config/firebaseConfig.js";
+import { Picker } from "@react-native-picker/picker";
 
 const Signup = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -618,6 +32,7 @@ const Signup = ({ navigation }) => {
   const [shakeAnimation, setShakeAnimation] = useState(new Animated.Value(0));
   const [show, setShow] = useState(Platform.OS === "ios");
   const [mode, setMode] = useState("date");
+  const [selectedCategory, setSelectedCategory] = useState("Student");
 
   const handleSignup = () => {
     // Validate form fields
@@ -689,6 +104,7 @@ const Signup = ({ navigation }) => {
             level: "Beginners",
             points: 0,
             ageGroup: ageGroup,
+            category: selectedCategory,
             isFirstTime: true,
           }).catch((error) => {
             Alert.alert(error.errorCode, error.message);
@@ -742,97 +158,109 @@ const Signup = ({ navigation }) => {
     checkEmailVerification();
   }, []);
 
-
-
-
   return (
     <ImageBackground
       source={require("../../assets/bg.jpeg")}
       style={styles.background}
     >
-      <View style={styles.container}>
-        {loading && (
-          <View style={styles.overlay}>
-            <ActivityIndicator size="large" color="blue" />
-            <Text style={styles.loadingText}>Signing up...</Text>
-          </View>
-        )}
-
-        <Text style={styles.label}>Username</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={(text) => setUsername(text)}
-          value={username}
-        />
-        <Text style={styles.label}>Email</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={(text) => setEmail(text)}
-          value={email}
-          autoCapitalize="none"
-        />
-        <Text style={styles.label}>Password</Text>
-        <TextInput
-          style={styles.input}
-          secureTextEntry={true}
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-          autoCapitalize="none"
-        />
-        <Text style={styles.label}>Confirm Password</Text>
-        <TextInput
-          style={styles.input}
-          secureTextEntry={true}
-          onChangeText={(text) => setConfirmPassword(text)}
-          value={confirmPassword}
-          autoCapitalize="none"
-        />
-        <Text style={styles.label}>Date of Birth</Text>
-        <View
-          style={{
-            flexDirection: "row",
-            marginHorizontal: "10%",
-            marginTop: 10,
-          }}
-        >
-          <View>
-            <TouchableOpacity onPress={() => setShow(true)}>
-              {Platform.OS === "ios" ? (
-                <Text style={{ fontSize: 0 }}></Text>
-              ) : (
-                <Text style={{ fontSize: 18 }}>
-                  {date.toLocaleDateString()}
-                </Text>
+      <ScrollView >
+        <View style={styles.container}>
+          {loading && (
+            <View style={styles.overlay}>
+              <ActivityIndicator size="large" color="blue" />
+              <Text style={styles.loadingText}>Signing up...</Text>
+            </View>
+          )}
+          <Text style={styles.label}>Username</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => setUsername(text)}
+            value={username}
+          />
+          <Text style={styles.label}>Email</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => setEmail(text)}
+            value={email}
+            autoCapitalize="none"
+          />
+          <Text style={styles.label}>Password</Text>
+          <TextInput
+            style={styles.input}
+            secureTextEntry={true}
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+            autoCapitalize="none"
+          />
+          <Text style={styles.label}>Confirm Password</Text>
+          <TextInput
+            style={styles.input}
+            secureTextEntry={true}
+            onChangeText={(text) => setConfirmPassword(text)}
+            value={confirmPassword}
+            autoCapitalize="none"
+          />
+          <View
+            style={{
+              flexDirection: "row",
+              marginHorizontal: "10%",
+              marginTop: 10,
+            }}
+          >
+            <Text style={styles.label}>Date of Birth</Text>
+            <View>
+              <TouchableOpacity onPress={() => setShow(true)}>
+                {Platform.OS === "ios" ? (
+                  <Text style={{ fontSize: 0 }}></Text>
+                ) : (
+                  <Text style={{ fontSize: 18 }}>
+                    {date.toLocaleDateString()}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            </View>
+            <View style={{ minWidth: 130 }}>
+              {show && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode={mode}
+                  display="default"
+                  is24Hour={true}
+                  onChange={(event, selectedDate) => {
+                    setShow(Platform.OS === "ios");
+                    if (selectedDate) setDate(selectedDate);
+                  }}
+                />
               )}
-            </TouchableOpacity>
+            </View>
           </View>
+          <View style={{ width: "100%" }}>
+            <Picker
+              selectedValue={selectedCategory}
+              onValueChange={(itemValue, itemIndex) =>
+                setSelectedCategory(itemValue)
+              }
+            >
+              <Picker.Item label="Select Your Occupation" value="Student" />
+              <Picker.Item label="Student" value="Student" />
 
-          <View style={{ minWidth: 130 }}>
-            {show && (
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={date}
-                mode={mode}
-                display="default"
-                is24Hour={true}
-                onChange={(event, selectedDate) => {
-                  setShow(Platform.OS === "ios");
-                  if (selectedDate) setDate(selectedDate);
-                }}
-              />
-            )}
+              <Picker.Item label="Employee" value="Employee" />
+              <Picker.Item label="Business Owner" value="Business Owner" />
+              <Picker.Item label="Other" value="Other" />
+            </Picker>
           </View>
+          <TouchableOpacity style={styles.button} onPress={handleSignup}>
+            <Text style={styles.buttonText}>Sign up</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.login}
+            onPress={() => navigation.navigate("Login")}
+          >
+            <Text style={styles.loginText}>Already have an account? Login</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.button} onPress={handleSignup}>
-          <Text style={styles.buttonText}>Sign up</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.login}
-          onPress={() => navigation.navigate("Login")}
-        >
-          <Text style={styles.loginText}>Already have an account? Login</Text>
-        </TouchableOpacity>
-      </View>
+      </ScrollView>
     </ImageBackground>
   );
 };
@@ -846,17 +274,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   container: {
-    width: "90%",
-   // height: "90%",
+    width: "100%",
     backgroundColor: "white",
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
-    opacity: 0.8,
+    opacity: 0.9,
+    margin:5,
+    alignSelf:'center', 
   },
   label: {
-    fontSize: 16,
-    marginTop: 20,
+    fontSize: 14,
+    marginTop: 5,
   },
   input: {
     width: "100%",

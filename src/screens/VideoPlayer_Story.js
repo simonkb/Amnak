@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
     overflow: "hidden",
-    maxHeight:200
+    maxHeight: 200,
   },
   video: {
     width: "100%",

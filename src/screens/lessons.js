@@ -9,7 +9,6 @@ import {
   FlatList,
   StyleSheet,
   Alert,
-  ScrollView,
 } from "react-native";
 import { collection, doc, onSnapshot } from "firebase/firestore";
 import ChatAssistant from "./chatAssistant";
@@ -45,7 +44,7 @@ const Lessons = ({ navigation }) => {
   const fetchUserData = async () => {
     if (auth.currentUser) {
       const user = auth.currentUser;
-      if (user !== null && user.emailVerified) {
+      if (user) {
         const uid = user.uid;
         try {
           onSnapshot(doc(db, "Users", uid), (doc) => {
@@ -72,77 +71,123 @@ const Lessons = ({ navigation }) => {
 
   const readBeginnerLessons = () => {
     try {
-      const lessonsRef = collection(
-        db,
-        "/Lessons/" + userData?.ageGroup + "/Levels/" + "Beginners" + "/lessons"
-      );
-      onSnapshot(lessonsRef, (querySnapshot) => {
-        const allLessons = [];
-        querySnapshot.forEach((doc) => {
-          allLessons.push({ id: doc.id, ...doc.data() });
+      if (userData.category !== "Employee") {
+        const lessonsRef = collection(
+          db,
+          "/Lessons/" +
+            userData?.ageGroup +
+            "/Levels/" +
+            "Beginners" +
+            "/lessons"
+        );
+        onSnapshot(lessonsRef, (querySnapshot) => {
+          const allLessons = [];
+          querySnapshot.forEach((doc) => {
+            allLessons.push({ id: doc.id, ...doc.data() });
+          });
+          setBeginnerLessons(allLessons);
         });
-        setBeginnerLessons(allLessons);
-        // if (allLessons.length === 0) {
-        //   Alert.alert(
-        //     "Message",
-        //     "We are sorry to let you know that we don't have any lesson for this level yet. We will add it asap."
-        //   );
-        // }
-      });
+      } else {
+        const lessonsRef = collection(
+          db,
+          "/Lessons/" +
+            userData?.category +
+            "/Levels/" +
+            "Beginners" +
+            "/lessons"
+        );
+        onSnapshot(lessonsRef, (querySnapshot) => {
+          const allLessons = [];
+          querySnapshot.forEach((doc) => {
+            allLessons.push({ id: doc.id, ...doc.data() });
+          });
+          setBeginnerLessons(allLessons);
+        });
+      }
     } catch (error) {
       console.log(error);
     }
   };
   const readIntermediateLessons = () => {
     try {
-      const lessonsRef = collection(
-        db,
-        "/Lessons/" +
-          userData?.ageGroup +
-          "/Levels/" +
-          "Intermediate" +
-          "/lessons"
-      );
-      onSnapshot(lessonsRef, (querySnapshot) => {
-        const allLessons = [];
-        querySnapshot.forEach((doc) => {
-          allLessons.push({ id: doc.id, ...doc.data() });
+      if (userData.category !== "Employee") {
+        const lessonsRef = collection(
+          db,
+          "/Lessons/" +
+            userData?.ageGroup +
+            "/Levels/" +
+            "Intermediate" +
+            "/lessons"
+        );
+        onSnapshot(lessonsRef, (querySnapshot) => {
+          const allLessons = [];
+          querySnapshot.forEach((doc) => {
+            allLessons.push({ id: doc.id, ...doc.data() });
+          });
+          setIntermediateLessons(allLessons);
         });
-        setIntermediateLessons(allLessons);
-        // if (allLessons.length === 0) {
-        //   Alert.alert(
-        //     "Message",
-        //     "We are sorry to let you know that we don't have any lesson for this level yet. We will add it asap."
-        //   );
-        // }
-      });
+      } else {
+        const lessonsRef = collection(
+          db,
+          "/Lessons/" +
+            userData?.category +
+            "/Levels/" +
+            "Intermediate" +
+            "/lessons"
+        );
+        onSnapshot(lessonsRef, (querySnapshot) => {
+          const allLessons = [];
+          querySnapshot.forEach((doc) => {
+            allLessons.push({ id: doc.id, ...doc.data() });
+          });
+          setIntermediateLessons(allLessons);
+        });
+      }
     } catch (error) {
       console.log(error);
     }
   };
   const readAdvancedLessons = () => {
     try {
-      const lessonsRef = collection(
-        db,
-        "/Lessons/" + userData?.ageGroup + "/Levels/" + "Advanced" + "/lessons"
-      );
-      onSnapshot(lessonsRef, (querySnapshot) => {
-        const allLessons = [];
-        querySnapshot.forEach((doc) => {
-          allLessons.push({ id: doc.id, ...doc.data() });
+      if (userData.category !== "Employee") {
+        const lessonsRef = collection(
+          db,
+          "/Lessons/" +
+            userData?.ageGroup +
+            "/Levels/" +
+            "Advanced" +
+            "/lessons"
+        );
+        onSnapshot(lessonsRef, (querySnapshot) => {
+          const allLessons = [];
+          querySnapshot.forEach((doc) => {
+            allLessons.push({ id: doc.id, ...doc.data() });
+          });
+          setAdvancedLessons(allLessons);
         });
-        setAdvancedLessons(allLessons);
-        // if (allLessons.length === 0) {
-        //   Alert.alert(
-        //     "Message",
-        //     "We are sorry to let you know that we don't have any lesson for this level yet. We will add it asap."
-        //   );
-        // }
-      });
+      } else {
+        const lessonsRef = collection(
+          db,
+          "/Lessons/" +
+            userData?.category +
+            "/Levels/" +
+            "Advanced" +
+            "/lessons"
+        );
+        onSnapshot(lessonsRef, (querySnapshot) => {
+          const allLessons = [];
+          querySnapshot.forEach((doc) => {
+            allLessons.push({ id: doc.id, ...doc.data() });
+          });
+          setAdvancedLessons(allLessons);
+        });
+      }
     } catch (error) {
       console.log(error);
     }
   };
+  var message =
+    "Sorry, we don't have any lessons for this level yet. We will upload them shortly.";
   return (
     <ImageBackground
       source={require("../../assets/bg.jpeg")}
@@ -154,51 +199,80 @@ const Lessons = ({ navigation }) => {
             source={require("../../assets/icon.png")}
             style={styles.appIcon}
           />
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: "800",
-              color: "white",
-            }}
-          >
-            Your Level is: {userData?.level}
-          </Text>
+          {userData?.category !== "Employee" && (
+            <Text
+              style={{
+                fontSize: 24,
+                fontWeight: "800",
+                color: "white",
+              }}
+            >
+              Your Level is: {userData?.level}
+            </Text>
+          )}
         </View>
-        <View contentContainerStyle={styles.container} style={styles.container}>
-          <CollapsibleBar
-            title={"Beginner Lessons"}
-            isNotCurrentLevel={userData?.level !== "Beginners"}
+        {userData?.category !== "Employee" ? (
+          <View
+            contentContainerStyle={styles.container}
+            style={styles.container}
           >
+            <CollapsibleBar
+              title={"Beginner Lessons"}
+              isNotCurrentLevel={userData?.level !== "Beginners"}
+            >
+              <FlatList
+                data={beginnerLessons}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerStyle={styles.lessonsContainer}
+              />
+              {beginnerLessons.length === 0 && (
+                <Text style={styles.message}>{message}</Text>
+              )}
+            </CollapsibleBar>
+            <CollapsibleBar
+              title={"Intermediate Lessons"}
+              isNotCurrentLevel={userData?.level !== "Intermediate"}
+            >
+              <FlatList
+                data={intermediateLessons}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerStyle={styles.lessonsContainer}
+              />
+              {intermediateLessons.length === 0 && (
+                <Text style={styles.message}>{message}</Text>
+              )}
+            </CollapsibleBar>
+            <CollapsibleBar
+              title={"Advanced Lessons"}
+              isNotCurrentLevel={userData?.level !== "Advanced"}
+            >
+              <FlatList
+                data={advancedLessons}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerStyle={styles.lessonsContainer}
+              />
+              {advancedLessons.length === 0 && (
+                <Text style={styles.message}>{message}</Text>
+              )}
+            </CollapsibleBar>
+          </View>
+        ) : (
+          <>
             <FlatList
               data={beginnerLessons}
               renderItem={renderItem}
               keyExtractor={(item) => item.id.toString()}
               contentContainerStyle={styles.lessonsContainer}
             />
-          </CollapsibleBar>
-          <CollapsibleBar
-            title={"Intermediate Lessons"}
-            isNotCurrentLevel={userData?.level !== "Intermediate"}
-          >
-            <FlatList
-              data={intermediateLessons}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.id.toString()}
-              contentContainerStyle={styles.lessonsContainer}
-            />
-          </CollapsibleBar>
-          <CollapsibleBar
-            title={"Advanced Lessons"}
-            isNotCurrentLevel={userData?.level !== "Advanced"}
-          >
-            <FlatList
-              data={advancedLessons}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.id.toString()}
-              contentContainerStyle={styles.lessonsContainer}
-            />
-          </CollapsibleBar>
-        </View>
+            {beginnerLessons.length === 0 && (
+              <Text style={styles.message}>{message}</Text>
+            )}
+          </>
+        )}
+
         <View
           style={{ bottom: 0, left: 0, position: "absolute", width: "100%" }}
         >
@@ -224,7 +298,8 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     alignItems: "center",
-    marginBottom: 30,
+    marginBottom: 20,
+    top: 10,
   },
   appIcon: {
     width: 150,
@@ -253,6 +328,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
   },
+  message: { fontSize: 14, margin: 5, fontWeight: "600" },
 });
 
 export default Lessons;
