@@ -207,19 +207,6 @@ const Home = ({ navigation }) => {
             ></MaterialCommunityIcons>
             <Text style={styles.buttonText}>Report Cybercrimes </Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              navigation.navigate("Game");
-            }}
-          >
-            <MaterialCommunityIcons
-              name="gamepad"
-              color={"green"}
-              size={40}
-            ></MaterialCommunityIcons>
-            <Text style={styles.buttonText}>Games</Text>
-          </TouchableOpacity> */}
         </ScrollView>
       </View>
       <View style={styles.bottomContainer}>

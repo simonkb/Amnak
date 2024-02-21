@@ -15,7 +15,7 @@ import LandingPage from "./index";
 import ReadDailyNews from "./ReadDailyNews";
 import CertificationCategoriesPage from "./CertificationCategoriesPage";
 import CertificationDetailsPage from "./CertificationDetailsPage";
-import { auth } from "../config/firebaseConfig";
+import { auth } from "../config/firebaseConfig.js";
 import { onAuthStateChanged } from "firebase/auth";
 import Stories from "./Stories";
 import Scenarios from "./Scenarios";
